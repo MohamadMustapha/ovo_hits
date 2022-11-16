@@ -1,7 +1,6 @@
 package com.example.ovohits.database.models;
 
 import java.sql.Blob;
-import java.util.Arrays;
 
 public class Song {
     private int id;
