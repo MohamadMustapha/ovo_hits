@@ -11,7 +11,8 @@
    <bottom>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #005da3;" BorderPane.alignment="CENTER">
          <children>
-            <Button layoutX="274.0" layoutY="14.0" mnemonicParsing="false" style="-fx-background-color: black;" text="Upload " textFill="WHITE" />
+            <ListView layoutX="200.0" prefHeight="103.0" prefWidth="208.0" />
+            <Button layoutX="274.0" layoutY="107.0" mnemonicParsing="false" style="-fx-background-color: black;" text="Upload" textFill="WHITE" />
          </children></AnchorPane>
    </bottom>
    <top>
