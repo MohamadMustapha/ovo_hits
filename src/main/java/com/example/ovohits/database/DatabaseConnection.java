@@ -7,7 +7,7 @@ public class DatabaseConnection {
     public static Connection connection;
 
     public static Connection getConnection() {
-        String url = "jdbc:mysql://localhost";
+        String url = "jdbc:mysql://localhost/OVO_Hits";
         String adminUsername = "root";
         String adminPassword = "pass-123";
 

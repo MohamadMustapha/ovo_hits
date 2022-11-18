@@ -7,7 +7,8 @@ module com.example.ovohits {
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
     requires mysql.connector.j;
+    requires java.sql.rowset;
 
-    opens com.example.ovohits to javafx.fxml;
     exports com.example.ovohits;
+    opens com.example.ovohits to javafx.fxml;
 }

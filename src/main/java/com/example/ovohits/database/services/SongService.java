@@ -4,24 +4,21 @@ import com.example.ovohits.database.DatabaseConnection;
 import com.example.ovohits.database.models.Song;
 import com.example.ovohits.database.repositories.SongRepository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SongService implements SongRepository {
     private static final Connection connection = DatabaseConnection.getConnection();
 
-    private void prepare_query(PreparedStatement preparedStatement, Song song) throws SQLException {
+    private void prepare_query(PreparedStatement preparedStatement, Song song) throws Exception {
         preparedStatement.setBlob(1, song.getData());
         preparedStatement.setString(2, song.getName());
         preparedStatement.setInt(3, song.getUser_id());
     }
 
     @Override
-    public int add(Song song) throws SQLException {
+    public int add(Song song) throws Exception {
         String query = "INSERT INTO SONG(" +
                        "data_, name_, user_id) " +
                        "VALUES (?, ?, ?)";
@@ -39,7 +36,7 @@ public class SongService implements SongRepository {
     }
 
     @Override
-    public void update(Song song) throws SQLException {
+    public void update(Song song) throws Exception {
         String query = "UPDATE SONG SET " +
                        "data_=?, name_=?, user_id=? " +
                        "WHERE id=?";
@@ -50,7 +47,7 @@ public class SongService implements SongRepository {
     }
 
     @Override
-    public Song getSong(int id) throws SQLException {
+    public Song getSong(int id) throws Exception {
         String query = "SELECT * FROM SONG WHERE id=?";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, id);
