@@ -13,6 +13,8 @@
          <children>
             <ListView layoutX="200.0" prefHeight="103.0" prefWidth="208.0" />
             <Button layoutX="274.0" layoutY="107.0" mnemonicParsing="false" style="-fx-background-color: black;" text="Upload" textFill="WHITE" />
+            <Button layoutX="14.0" layoutY="161.0" mnemonicParsing="false" style="-fx-background-color: black;" text="Return" textFill="WHITE" />
+            <Button layoutX="274.0" layoutY="142.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="56.0" style="-fx-background-color: black;" text="Add" textFill="WHITE" />
          </children></AnchorPane>
    </bottom>
    <top>
@@ -29,6 +31,8 @@
                   <Font name="Arial Black" size="12.0" />
                </font>
             </Label>
+            <Button layoutX="572.0" layoutY="2.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="22.0" style="-fx-background-color: #005da3;" text="X" />
+            <Button layoutX="543.0" layoutY="2.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="23.0" style="-fx-background-color: Onyx;" text="_" />
          </children>
       </AnchorPane>
    </top>
