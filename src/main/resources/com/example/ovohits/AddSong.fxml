@@ -10,30 +10,25 @@
    </center>
    <bottom>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #005da3;" BorderPane.alignment="CENTER">
-         <children>
-            <ListView layoutX="200.0" prefHeight="103.0" prefWidth="208.0" />
-            <Button layoutX="274.0" layoutY="107.0" mnemonicParsing="false" style="-fx-background-color: black;" text="Upload" textFill="WHITE" />
-            <Button layoutX="14.0" layoutY="161.0" mnemonicParsing="false" style="-fx-background-color: black;" text="Return" textFill="WHITE" />
-            <Button layoutX="274.0" layoutY="142.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="56.0" style="-fx-background-color: black;" text="Add" textFill="WHITE" />
-         </children></AnchorPane>
+         <ListView layoutX="200.0" prefHeight="103.0" prefWidth="208.0" />
+         <Button layoutX="274.0" layoutY="107.0" mnemonicParsing="false" style="-fx-background-color: black;" text="Upload" textFill="WHITE" />
+         <Button layoutX="14.0" layoutY="161.0" mnemonicParsing="false" style="-fx-background-color: black;" text="Return" textFill="WHITE" />
+         <Button layoutX="274.0" layoutY="142.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="56.0" style="-fx-background-color: black;" text="Add" textFill="WHITE" />
+      </AnchorPane>
    </bottom>
    <top>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #005da3;" BorderPane.alignment="CENTER">
-         <children>
-            <Label layoutX="213.0" layoutY="42.0" prefHeight="78.0" prefWidth="181.0" text="OVO-HITS" textFill="WHITE">
-               <font>
-                  <Font name="Onyx" size="70.0" />
-               </font>
-            </Label>
-            <TextField layoutX="230.0" layoutY="161.0" />
-            <Label layoutX="148.0" layoutY="165.0" prefHeight="18.0" prefWidth="80.0" text="Song Name" textFill="WHITE">
-               <font>
-                  <Font name="Arial Black" size="12.0" />
-               </font>
-            </Label>
-            <Button layoutX="572.0" layoutY="2.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="22.0" style="-fx-background-color: #005da3;" text="X" />
-            <Button layoutX="543.0" layoutY="2.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="23.0" style="-fx-background-color: Onyx;" text="_" />
-         </children>
+         <Label layoutX="128.0" layoutY="41.0" prefHeight="86.0" prefWidth="344.0" text="OVO-HITS" textFill="WHITE">
+            <font>
+               <Font name="Onyx" size="70.0" />
+            </font>
+         </Label>
+         <TextField layoutX="230.0" layoutY="161.0" />
+         <Label layoutX="148.0" layoutY="165.0" prefHeight="18.0" prefWidth="80.0" text="Song Name" textFill="WHITE">
+            <font>
+               <Font name="Arial Black" size="12.0" />
+            </font>
+         </Label>
       </AnchorPane>
    </top>
 </BorderPane>
