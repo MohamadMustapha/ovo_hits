@@ -4,16 +4,31 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.ovohits.AddSongController">
-   <Label id="songNameLabel" layoutX="224.0" layoutY="122.0" text="Name" />
-   <TextField id="songNameInput" fx:id="songNameInput" layoutX="265.0" layoutY="117.0" />
-   <Button id="songDataInput" layoutX="267.0" layoutY="256.0" mnemonicParsing="false" onAction="#uploadSong" text="Upload New Song" />
-   <Label id="songLabel" layoutX="285.0" layoutY="55.0" text="Song" textAlignment="CENTER">
-      <font>
-         <Font name="System Bold" size="36.0" />
-      </font>
-   </Label>
-   <ListView fx:id="songInputView" layoutX="225.0" layoutY="162.0" prefHeight="76.0" prefWidth="200.0" />
-   <Button layoutX="383.0" layoutY="323.0" mnemonicParsing="false" onAction="#addSong" text="Add" />
-   <Button layoutX="224.0" layoutY="323.0" mnemonicParsing="false" text="Cancel" />
-</AnchorPane>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </center>
+   <bottom>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #005da3;" BorderPane.alignment="CENTER">
+         <ListView layoutX="200.0" prefHeight="103.0" prefWidth="208.0" />
+         <Button layoutX="274.0" layoutY="107.0" mnemonicParsing="false" style="-fx-background-color: black;" text="Upload" textFill="WHITE" />
+         <Button layoutX="14.0" layoutY="161.0" mnemonicParsing="false" style="-fx-background-color: black;" text="Return" textFill="WHITE" />
+         <Button layoutX="274.0" layoutY="142.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="56.0" style="-fx-background-color: black;" text="Add" textFill="WHITE" />
+      </AnchorPane>
+   </bottom>
+   <top>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #005da3;" BorderPane.alignment="CENTER">
+         <Label layoutX="128.0" layoutY="41.0" prefHeight="86.0" prefWidth="344.0" text="OVO-HITS" textFill="WHITE">
+            <font>
+               <Font name="Onyx" size="70.0" />
+            </font>
+         </Label>
+         <TextField layoutX="230.0" layoutY="161.0" />
+         <Label layoutX="148.0" layoutY="165.0" prefHeight="18.0" prefWidth="80.0" text="Song Name" textFill="WHITE">
+            <font>
+               <Font name="Arial Black" size="12.0" />
+            </font>
+         </Label>
+      </AnchorPane>
+   </top>
+</BorderPane>
