@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -25,6 +26,8 @@ public class RegisterController {
     @FXML
     private ListView<String> listView;
     @FXML
+    private PasswordField passwordInput;
+    @FXML
     private TextField emailInput;
     @FXML
     private TextField firstNameInput;
@@ -32,8 +35,6 @@ public class RegisterController {
     private TextField lastNameInput;
     @FXML
     private TextField nameInput;
-    @FXML
-    private TextField passwordInput;
     @FXML
     private TextField usernameInput;
 
