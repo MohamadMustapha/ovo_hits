@@ -1,62 +1,71 @@
 package com.example.ovohits;
 
+import com.example.ovohits.database.models.Song;
 import com.example.ovohits.database.models.User;
+import com.example.ovohits.database.services.SongService;
 import com.example.ovohits.database.services.UserService;
 
+import javax.sql.rowset.serial.SerialBlob;
+import java.io.FileInputStream;
 import java.net.*;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Server {
-    public static void main(String[] args) throws Exception {
-        //connection
-        int port = 6969;
-        DatagramSocket datagramSocket = new DatagramSocket(port);
-        byte[] receivedDataBuffer = new byte[65535];
+    private static String byteToString(byte[] bytes){
+        if (bytes == null) return null;
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; bytes[i] != 0; i++)
+            stringBuilder.append((char) bytes[i]);
+        return stringBuilder.toString();
+    }
 
-        // data handling structures
-        DatagramPacket receiver;
-        ArrayList<byte[]> bufferArray = new ArrayList<>();
-        while(true){
-            //receive data
-            User user;
-            receiver = new DatagramPacket(receivedDataBuffer,receivedDataBuffer.length);
+    public static void main(String[] args) throws Exception {
+        // Establish a connection with a Port: 6969
+        DatagramSocket datagramSocket = new DatagramSocket(6969);
+
+        // Manage data between client and server
+        ArrayList<byte[]> dataBufferArray = new ArrayList<>();
+        while (true){
+            byte[] receivedDataBuffer = new byte[16777215];
+            DatagramPacket receiver = new DatagramPacket(receivedDataBuffer, receivedDataBuffer.length);
             datagramSocket.receive(receiver);
 
-
-            // registration
-            if(!byteToString(receivedDataBuffer).equals("submit")) {
-                bufferArray.add(receivedDataBuffer);
-                System.out.println("client sent: " + byteToString(receivedDataBuffer));
+            switch (byteToString(receivedDataBuffer)) {
+                case "@addUser": addUser(dataBufferArray); break;
+                default:
+                    dataBufferArray.add(receivedDataBuffer);
+                    System.out.println("Client sent: " + byteToString(receivedDataBuffer));
             }
-            // close the server
-            else{
-                // create the user
-                user = registration(bufferArray);
-                // add teh user to the db
-                UserService userService = new UserService();
-                userService.add(user);
-                System.out.println(user);
-                System.out.println("Client Exited");
-                break;
-            }
-            receivedDataBuffer = new byte[65535];
         }
-
-
-
     }
-    public static String byteToString(byte[] e){
-        if (e==null)return null;
-        StringBuilder s = new StringBuilder();
-        int i =0;
-        while(e[i]!=0){
-            s.append((char)e[i]);
-            i++;
-        }
-        return s.toString();
+
+    public static void addUser(ArrayList<byte[]> dataBufferArray) throws Exception {
+        int user_id = new UserService().add(new User(
+                byteToString(dataBufferArray.get(0)),
+                byteToString(dataBufferArray.get(1)),
+                byteToString(dataBufferArray.get(2)),
+                byteToString(dataBufferArray.get(3)),
+                byteToString(dataBufferArray.get(4))
+        ));
+        ArrayList<byte[]> songDataBufferArray = (ArrayList<byte[]>) Arrays.asList(dataBufferArray.get(5),
+                dataBufferArray.get(6), Integer.toString(user_id).getBytes());
+        addSong(songDataBufferArray);
     }
+
+    public static void addSong(ArrayList<byte[]> dataBufferArray) throws Exception {
+        new SongService().add(new Song(
+                new SerialBlob(dataBufferArray.get(0)),
+                new String(dataBufferArray.get(1)),
+                ByteBuffer.wrap(dataBufferArray.get(2)).getInt()
+        ));
+    }
+
 //    public static boolean isEmail(String email)
 //    {
 //        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
