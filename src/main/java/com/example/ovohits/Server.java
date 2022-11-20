@@ -22,7 +22,7 @@ import java.util.Objects;
 import java.util.Scanner;
 
 public class Server {
-    private static Scanner scan = new Scanner(System.in);
+    private static final Scanner scan = new Scanner(System.in);
 
     private static String byteToString(byte[] bytes) {
         if (bytes == null) return null;
@@ -35,6 +35,7 @@ public class Server {
     public static void main(String[] args) throws Exception {
         int port = scan.nextInt();
         DatagramSocket datagramSocket = SocketConnection.getServerDatagramSocket(port);
+        System.out.println("Server running at Port: " + port);
 
         ArrayList<byte[]> dataBufferArray = new ArrayList<>();
         while (true) {
@@ -43,17 +44,18 @@ public class Server {
             datagramSocket.receive(receiver);
 
             switch (byteToString(receivedDataBuffer)) {
-                case "@addUser":
+                case "@addUser" -> {
                     addUser(dataBufferArray);
                     dataBufferArray.clear();
-                    break;
-                case "@login":
-                    login(dataBufferArray);
+                }
+                case "@login" -> {
+                    login(dataBufferArray, receiver.getSocketAddress());
                     dataBufferArray.clear();
-                    break;
-                default:
+                }
+                default -> {
                     dataBufferArray.add(receivedDataBuffer);
                     System.out.println("Client sent: " + byteToString(receivedDataBuffer));
+                }
             }
         }
     }
@@ -92,14 +94,19 @@ public class Server {
 //        return pat.matcher(email).matches();
 //    }
 
-    public static void login(ArrayList<byte[]> dataBufferArray) throws SQLException {
+    public static void login(ArrayList<byte[]> dataBufferArray, SocketAddress socketAddress) throws Exception {
         User user = new UserService().getUser(byteToString(dataBufferArray.get(0)));
-       if(!Objects.equals(user.getPassword(), byteToString(dataBufferArray.get(1)))){
-           DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
-           byte[] sendingBufferArray = new byte[16777215];
-           DatagramPacket datagramPacket = new DatagramPacket(sendingBufferArray,sendingBufferArray.length);
+
+        DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
+        byte[] sendingBufferArray;
+        // 0 for false 1 for true
+        if(!Objects.equals(user.getPassword(), byteToString(dataBufferArray.get(1)))){
+            sendingBufferArray = new byte[]{(byte) 0};
+           datagramSocket.send(new DatagramPacket(sendingBufferArray,sendingBufferArray.length, socketAddress));
        }
-
-
+       else {
+            sendingBufferArray = new byte[]{(byte) 1};
+            datagramSocket.send(new DatagramPacket(sendingBufferArray,sendingBufferArray.length, socketAddress));
+       }
 }
 }
