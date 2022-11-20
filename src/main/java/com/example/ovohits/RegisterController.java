@@ -32,7 +32,7 @@ public class RegisterController {
     @FXML
     private TextField lastNameInput;
     @FXML
-    private TextField nameInput;
+    private TextField songNameInput;
     @FXML
     private TextField usernameInput;
 
@@ -47,7 +47,7 @@ public class RegisterController {
         if (listView.getItems().size() == 0) return;
 
         byte[] dataBuffer;
-        DatagramSocket datagramSocket = new DatagramSocket();
+        DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
         InetAddress inetAddress = InetAddress.getLocalHost();
 
         dataBuffer = emailInput.getText().getBytes();
@@ -68,19 +68,17 @@ public class RegisterController {
         dataBuffer = "@addUser".getBytes();
         datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, inetAddress, 6969));
 
-//        FileInputStream fileInputStream = new FileInputStream(songData);
-//        byte[] songDataBytes = new byte[(int) songData.length()];
-//        if (fileInputStream.read(songDataBytes) == -1) {
-//            System.out.println("Reading song audio failed!");
-//            return;
-//        }
-//        fileInputStream.close();
-//
-//        dataBuffer = songDataBytes;
-//        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, inetAddress, 6969));
-//
-//        dataBuffer = nameInput.getText().getBytes();
-//        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, inetAddress, 6969));
+        FileInputStream fileInputStream = new FileInputStream(songData);
+        dataBuffer = new byte[(int) songData.length()];
+        if (fileInputStream.read(dataBuffer) == -1) {
+            System.out.println("Reading song audio failed!");
+            return;
+        }
+        fileInputStream.close();
+        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, inetAddress, 6969));
+
+        dataBuffer = songNameInput.getText().getBytes();
+        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, inetAddress, 6969));
     }
 
     public void goBack() throws IOException {

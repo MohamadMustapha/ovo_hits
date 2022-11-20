@@ -14,6 +14,9 @@ import javafx.stage.Stage;
 import javax.sql.rowset.serial.SerialBlob;
 
 import java.io.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 
 public class AddSongController {
     private File songData = null;
@@ -28,19 +31,28 @@ public class AddSongController {
         if (songData == null) return;
         if (listView.getItems().size() == 0) return;
 
+        byte[] dataBuffer;
+        DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
+
         FileInputStream fileInputStream = new FileInputStream(songData);
-        byte[] songDataBytes = new byte[(int) songData.length()];
-        if (fileInputStream.read(songDataBytes) == -1) {
+        dataBuffer = new byte[(int) songData.length()];
+        if (fileInputStream.read(dataBuffer) == -1) {
             System.out.println("Read file failed!");
             return;
         }
         fileInputStream.close();
+        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, InetAddress.getLocalHost(), 6969));
 
-        new SongService().add(new Song(
-                new SerialBlob(songDataBytes),
-                songNameInput.getText(),
-                1
-        ));
+        dataBuffer = songNameInput.getText().getBytes();
+        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, InetAddress.getLocalHost(), 6969));
+
+
+
+//        new SongService().add(new Song(
+//                new SerialBlob(songDataBytes),
+//                songNameInput.getText(),
+//                1
+//        ));
     }
 
     public void goBack() throws IOException {
