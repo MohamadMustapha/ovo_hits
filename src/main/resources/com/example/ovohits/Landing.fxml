@@ -5,7 +5,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.ovohits.LandingController">
    <left>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <ImageView fitHeight="408.0" fitWidth="375.0" layoutY="-7.0" pickOnBounds="true">
@@ -17,9 +17,9 @@
       <AnchorPane prefHeight="400.0" prefWidth="226.0" style="-fx-background-color: #005da3;" BorderPane.alignment="CENTER">
          <Label layoutX="12.0" layoutY="155.0" text="Username" textFill="WHITE" />
          <Label layoutX="14.0" layoutY="200.0" text="Password" textFill="WHITE" />
-         <TextField layoutX="68.0" layoutY="151.0" />
-         <PasswordField layoutX="69.0" layoutY="196.0" />
-         <Button layoutX="92.0" layoutY="242.0" mnemonicParsing="false" style="-fx-background-color: grey;" text="Log In" textFill="WHITE">
+         <TextField fx:id="usernameField" layoutX="68.0" layoutY="151.0" />
+         <PasswordField fx:id="passwordField" layoutX="69.0" layoutY="196.0" />
+         <Button fx:id="loginButton" layoutX="92.0" layoutY="242.0" mnemonicParsing="false" onAction="#login" style="-fx-background-color: grey;" text="Log In" textFill="WHITE">
             <effect>
                <ColorAdjust />
             </effect>
