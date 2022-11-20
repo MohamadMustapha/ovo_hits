@@ -18,7 +18,7 @@
    </bottom>
    <top>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #005da3;" BorderPane.alignment="CENTER">
-         <Label layoutX="128.0" layoutY="41.0" prefHeight="86.0" prefWidth="344.0" text="OVO-HITS" textFill="WHITE">
+         <Label layoutX="193.0" layoutY="42.0" prefHeight="86.0" prefWidth="224.0" text="OVO-HITS" textFill="WHITE">
             <font>
                <Font name="Onyx" size="70.0" />
             </font>
