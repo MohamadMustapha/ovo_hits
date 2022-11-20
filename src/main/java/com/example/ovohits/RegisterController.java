@@ -1,7 +1,9 @@
 package com.example.ovohits;
 
 import com.example.ovohits.database.models.Song;
+import com.example.ovohits.database.models.User;
 import com.example.ovohits.database.services.SongService;
+import com.example.ovohits.database.services.UserService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,21 +14,46 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javax.sql.rowset.serial.SerialBlob;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
-import java.io.*;
-
-public class AddSongController {
+public class RegisterController {
     private File songData = null;
     @FXML
     private Button returnButton;
     @FXML
     private ListView<String> listView;
     @FXML
-    private TextField songNameInput;
+    private TextField emailInput;
+    @FXML
+    private TextField firstNameInput;
+    @FXML
+    private TextField lastNameInput;
+    @FXML
+    private TextField nameInput;
+    @FXML
+    private TextField passwordInput;
+    @FXML
+    private TextField usernameInput;
 
-    public void addSong() throws Exception {
+    public void addUser() throws Exception {
+        if (firstNameInput.getText().length() == 0) return;
+        if (lastNameInput.getText().length() == 0) return;
+        if (usernameInput.getText().length() == 0) return;
+        if (passwordInput.getText().length() == 0) return;
+        if (emailInput.getText().length() == 0) return;
+
         if (songData == null) return;
         if (listView.getItems().size() == 0) return;
+
+        int user_id = new UserService().add(new User(
+                emailInput.getText(),
+                firstNameInput.getText(),
+                lastNameInput.getText(),
+                passwordInput.getText(),
+                usernameInput.getText()
+        ));
 
         FileInputStream fileInputStream = new FileInputStream(songData);
         byte[] songDataBytes = new byte[(int) songData.length()];
@@ -38,8 +65,8 @@ public class AddSongController {
 
         new SongService().add(new Song(
                 new SerialBlob(songDataBytes),
-                songNameInput.getText(),
-                1
+                nameInput.getText(),
+                user_id
         ));
     }
 

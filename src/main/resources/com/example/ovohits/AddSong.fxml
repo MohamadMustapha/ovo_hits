@@ -10,15 +10,15 @@
    </center>
    <bottom>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #005da3;" BorderPane.alignment="CENTER">
-         <ListView fx:id="songInputView" layoutX="200.0" prefHeight="103.0" prefWidth="208.0" />
+         <ListView fx:id="listView" layoutX="200.0" prefHeight="103.0" prefWidth="208.0" />
          <Button layoutX="274.0" layoutY="107.0" mnemonicParsing="false" onAction="#uploadSong" style="-fx-background-color: black;" text="Upload" textFill="WHITE" />
-         <Button layoutX="14.0" layoutY="161.0" mnemonicParsing="false" style="-fx-background-color: black;" text="Return" textFill="WHITE" />
+         <Button fx:id="returnButton" layoutX="14.0" layoutY="161.0" mnemonicParsing="false" onAction="#goBack" style="-fx-background-color: black;" text="Return" textFill="WHITE" />
          <Button layoutX="274.0" layoutY="142.0" mnemonicParsing="false" onAction="#addSong" prefHeight="26.0" prefWidth="56.0" style="-fx-background-color: black;" text="Add" textFill="WHITE" />
       </AnchorPane>
    </bottom>
    <top>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #005da3;" BorderPane.alignment="CENTER">
-         <Label layoutX="128.0" layoutY="41.0" prefHeight="86.0" prefWidth="344.0" text="OVO-HITS" textFill="WHITE">
+         <Label layoutX="128.0" layoutY="41.0" prefHeight="86.0" prefWidth="344.0" text="OVO HITS" textAlignment="CENTER" textFill="WHITE">
             <font>
                <Font name="Onyx" size="70.0" />
             </font>
