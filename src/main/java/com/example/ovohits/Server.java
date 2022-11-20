@@ -4,9 +4,13 @@ import com.example.ovohits.database.models.Song;
 import com.example.ovohits.database.models.User;
 import com.example.ovohits.database.services.SongService;
 import com.example.ovohits.database.services.UserService;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -15,9 +19,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Scanner;
 
 public class Server {
-    private static String byteToString(byte[] bytes){
+    private static Scanner scan = new Scanner(System.in);
+
+    private static String byteToString(byte[] bytes) {
         if (bytes == null) return null;
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; bytes[i] != 0; i++)
@@ -26,18 +33,22 @@ public class Server {
     }
 
     public static void main(String[] args) throws Exception {
-        // Establish a connection with a Port: 6969
-        DatagramSocket datagramSocket = new DatagramSocket(6969);
+        int port = scan.nextInt();
+        DatagramSocket datagramSocket = SocketConnection.getServerDatagramSocket(port);
 
-        // Manage data between client and server
         ArrayList<byte[]> dataBufferArray = new ArrayList<>();
-        while (true){
+        while (true) {
             byte[] receivedDataBuffer = new byte[16777215];
             DatagramPacket receiver = new DatagramPacket(receivedDataBuffer, receivedDataBuffer.length);
             datagramSocket.receive(receiver);
 
             switch (byteToString(receivedDataBuffer)) {
-                case "@addUser": addUser(dataBufferArray); break;
+                case "@addUser":
+                    addUser(dataBufferArray);
+                    break;
+//                case: "@login":
+//                    login();
+//                    break;
                 default:
                     dataBufferArray.add(receivedDataBuffer);
                     System.out.println("Client sent: " + byteToString(receivedDataBuffer));
@@ -66,7 +77,7 @@ public class Server {
         ));
     }
 
-//    public static boolean isEmail(String email)
+    //    public static boolean isEmail(String email)
 //    {
 //        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
 //                "[a-zA-Z0-9_+&*-]+)*@" +
@@ -78,42 +89,11 @@ public class Server {
 //            return false;
 //        return pat.matcher(email).matches();
 //    }
-    public static User registration(ArrayList<byte[]> user){
-        User x = new User();
-        for(int i=0;i<5;i++){
-            String value = byteToString(user.get(i));
-            switch (i) {
-                case 0 -> x.setEmail(value);
-                case 1 -> x.setFirstName(value);
-                case 2 -> x.setLastName(value);
-                case 3 -> x.setPassword(value);
-                case 4 -> x.setUsername(value);
-            }
-        }
-        return x;
-    }
+
     public static boolean login(byte[] username, byte[] password) throws SQLException {
         UserService userService = new UserService();
         User user = userService.getUser(byteToString(username));
         return Objects.equals(user.getPassword(), byteToString(password));
 
     }
-//    public void login() throws Exception {
-//        String username = usernameField.getText();
-//        String password = passwordField.getText();
-//
-//        UserService userService = new UserService();
-//
-//        if(username.equals("") || password.equals("")){
-//            System.out.println("missing field");
-//        }
-//        else{
-//            User user = userService.getUser(username);
-//            if(Objects.equals(user.getPassword(),password)){
-//                System.out.println("login successful");
-//            }
-//            else {
-//                System.out.println("incorrect credentials");
-//            }
-//        }
 }
