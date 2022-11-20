@@ -37,14 +37,14 @@ public class RegisterController {
     private TextField usernameInput;
 
     public void addUser() throws Exception {
-        if (firstNameInput.getText().length() == 0) return;
-        if (lastNameInput.getText().length() == 0) return;
-        if (usernameInput.getText().length() == 0) return;
-        if (passwordInput.getText().length() == 0) return;
-        if (emailInput.getText().length() == 0) return;
+        if (firstNameInput.getText().isBlank()) return;
+        if (lastNameInput.getText().isBlank()) return;
+        if (usernameInput.getText().isBlank()) return;
+        if (passwordInput.getText().isBlank()) return;
+        if (emailInput.getText().isBlank()) return;
 
-        if (songData == null) return;
-        if (listView.getItems().size() == 0) return;
+        if (songData.exists()) return;
+        if (listView.getItems().isEmpty()) return;
 
         byte[] dataBuffer;
         DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
@@ -93,7 +93,7 @@ public class RegisterController {
 
         songData = fileChooser.showOpenDialog(null);
         if (songData != null) {
-            if (listView.getItems().size() == 0)
+            if (listView.getItems().isEmpty())
                 listView.getItems().add(songData.getName());
             else
                 listView.getItems().set(0, songData.getName());

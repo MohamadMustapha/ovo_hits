@@ -1,7 +1,5 @@
 package com.example.ovohits;
 
-import com.example.ovohits.database.models.Song;
-import com.example.ovohits.database.services.SongService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -10,8 +8,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
-import javax.sql.rowset.serial.SerialBlob;
 
 import java.io.*;
 import java.net.DatagramPacket;
@@ -28,8 +24,8 @@ public class AddSongController {
     private TextField songNameInput;
 
     public void addSong() throws Exception {
-        if (songData == null) return;
-        if (listView.getItems().size() == 0) return;
+        if (songData.exists()) return;
+        if (listView.getItems().isEmpty()) return;
 
         byte[] dataBuffer;
         DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
@@ -67,7 +63,7 @@ public class AddSongController {
 
         songData = fileChooser.showOpenDialog(null);
         if (songData != null) {
-            if (listView.getItems().size() == 0)
+            if (listView.getItems().isEmpty())
                 listView.getItems().add(songData.getName());
             else
                 listView.getItems().set(0, songData.getName());
