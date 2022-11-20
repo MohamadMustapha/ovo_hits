@@ -29,6 +29,7 @@ public class AddSongController {
 
         byte[] dataBuffer;
         DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
+        InetAddress inetAddress = InetAddress.getLocalHost();
 
         FileInputStream fileInputStream = new FileInputStream(songData);
         dataBuffer = new byte[(int) songData.length()];
@@ -37,10 +38,10 @@ public class AddSongController {
             return;
         }
         fileInputStream.close();
-        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, InetAddress.getLocalHost(), 6969));
+        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, inetAddress, 6969));
 
         dataBuffer = songNameInput.getText().getBytes();
-        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, InetAddress.getLocalHost(), 6969));
+        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, inetAddress, 6969));
 
 
 
