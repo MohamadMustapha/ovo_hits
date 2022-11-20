@@ -7,15 +7,17 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class AddSong extends Application {
+public class Landing extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(AddSong.class.getResource("AddSong.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Landing.class.getResource("Landing.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("OVO Hits");
         stage.setScene(scene);
         stage.show();
     }
 
-    public static void main(String[] args) { launch(); }
+    public static void main(String[] args) {
+        launch();
+    }
 }

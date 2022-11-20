@@ -55,26 +55,25 @@ public class SongService implements SongRepository {
         Song song = new Song();
         ResultSet resultSet = preparedStatement.executeQuery();
 
-        boolean check = false;
+        boolean found = false;
         while (resultSet.next()) {
-            check = true;
+            found = true;
             song.setId(resultSet.getInt("id"));
             song.setData(resultSet.getBlob("data_"));
             song.setName(resultSet.getString("name_"));
             song.setUser_id(resultSet.getInt("user_id"));
         }
 
-        return check ? song : null;
+        return found ? song : null;
     }
 
     @Override
     public List<Song> getSongs() throws SQLException {
         String query = "SELECT * FROM SONG";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
-
         ResultSet resultSet = preparedStatement.executeQuery();
-        List<Song> songList = new ArrayList<>();
 
+        List<Song> songList = new ArrayList<>();
         while (resultSet.next()) {
             Song song = new Song(
                     resultSet.getBlob("data_"),

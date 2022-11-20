@@ -5,7 +5,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
    <left>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <ImageView fitHeight="408.0" fitWidth="375.0" layoutY="-7.0" pickOnBounds="true">
@@ -24,7 +24,7 @@
                <ColorAdjust />
             </effect>
          </Button>
-         <Button layoutX="80.0" layoutY="283.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="79.0" style="-fx-background-color: grey;" text="Sign Up" textFill="WHITE" />
+         <Button layoutX="80.0" layoutY="283.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="79.0" style="-fx-background-color: grey;" text="Register" textFill="WHITE" />
          <Label contentDisplay="CENTER" layoutX="33.0" layoutY="43.0" prefHeight="78.0" prefWidth="162.0" text="                OVOHITS " textAlignment="CENTER" textFill="WHITE" textOverrun="CENTER_ELLIPSIS" />
       </AnchorPane>
    </right>

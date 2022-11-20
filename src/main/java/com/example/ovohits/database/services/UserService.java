@@ -18,9 +18,9 @@ public class UserService implements UserRepository {
         User user = new User();
         ResultSet resultSet = preparedStatement.executeQuery();
 
-        boolean check = false;
+        boolean found = false;
         while (resultSet.next()) {
-            check = true;
+            found = true;
             user.setId(resultSet.getInt("id"));
             user.setEmail(resultSet.getString("email"));
             user.setFirstName(resultSet.getString("first_name"));
@@ -29,7 +29,7 @@ public class UserService implements UserRepository {
             user.setUsername(resultSet.getString("username"));
         }
 
-        return check ? user : null;
+        return found ? user : null;
     }
 
     private void prepareQuery(PreparedStatement preparedStatement, User user) throws SQLException {
@@ -74,7 +74,6 @@ public class UserService implements UserRepository {
         String query = "SELECT * FROM USER WHERE id=?";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, id);
-
         return getUserData(preparedStatement);
     }
 
@@ -83,7 +82,6 @@ public class UserService implements UserRepository {
         String query = "SELECT * FROM USER WHERE username=?";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setString(1, username);
-
         return getUserData(preparedStatement);
     }
 
@@ -91,10 +89,9 @@ public class UserService implements UserRepository {
     public List<User> getUsers() throws SQLException {
         String query = "SELECT * FROM USER";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
-
         ResultSet resultSet = preparedStatement.executeQuery();
-        List<User> userList = new ArrayList<>();
 
+        List<User> userList = new ArrayList<>();
         while (resultSet.next()) {
             User user = new User(
                     resultSet.getString("email"),
