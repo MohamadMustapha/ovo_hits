@@ -45,10 +45,12 @@ public class Server {
             switch (byteToString(receivedDataBuffer)) {
                 case "@addUser":
                     addUser(dataBufferArray);
+                    dataBufferArray.clear();
                     break;
-//                case: "@login":
-//                    login();
-//                    break;
+                case "@login":
+                    login(dataBufferArray);
+                    dataBufferArray.clear();
+                    break;
                 default:
                     dataBufferArray.add(receivedDataBuffer);
                     System.out.println("Client sent: " + byteToString(receivedDataBuffer));
@@ -90,10 +92,14 @@ public class Server {
 //        return pat.matcher(email).matches();
 //    }
 
-    public static boolean login(byte[] username, byte[] password) throws SQLException {
-        UserService userService = new UserService();
-        User user = userService.getUser(byteToString(username));
-        return Objects.equals(user.getPassword(), byteToString(password));
+    public static void login(ArrayList<byte[]> dataBufferArray) throws SQLException {
+        User user = new UserService().getUser(byteToString(dataBufferArray.get(0)));
+       if(!Objects.equals(user.getPassword(), byteToString(dataBufferArray.get(1)))){
+           DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
+           byte[] sendingBufferArray = new byte[16777215];
+           DatagramPacket datagramPacket = new DatagramPacket(sendingBufferArray,sendingBufferArray.length);
+       }
 
-    }
+
+}
 }

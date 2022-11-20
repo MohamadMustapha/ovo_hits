@@ -5,9 +5,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 import java.net.DatagramPacket;
-import java.util.ArrayList;
-
-import static com.example.ovohits.SocketConnection.datagramSocket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class LandingController {
     @FXML
@@ -15,14 +15,24 @@ public class LandingController {
     @FXML
     private PasswordField passwordField;
 
-    public void login(){
+    public void login() throws Exception {
         String username = usernameField.getText();
         String password = passwordField.getText();
+
         byte[] dataBuffer;
-        if(username.isBlank()||password.isBlank()){
+        DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
+        InetAddress inetAddress = InetAddress.getLocalHost();
+
+        if (username.isBlank()||password.isBlank()){
             return;
         }
-//        dataBuffer = username.getBytes();
-//        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, inetAddress, 6969));
+        dataBuffer = username.getBytes();
+        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, inetAddress, 6969));
+
+        dataBuffer = password.getBytes();
+        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, inetAddress, 6969));
+
+        dataBuffer = "@login".getBytes();
+        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, inetAddress, 6969));
     }
 }
