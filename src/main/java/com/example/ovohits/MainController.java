@@ -5,6 +5,7 @@ import com.example.ovohits.database.models.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBase;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
@@ -20,7 +21,16 @@ import java.util.ArrayList;
 public class MainController {
     private ArrayList<Song> songList;
     @FXML
+    private Button returnButton;
+    @FXML
     private ListView<String> songsView;
+
+    public void goBack() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(AddSong.class.getResource("Landing.fxml"));
+        Stage stage = (Stage) returnButton.getScene().getWindow();
+        stage.setScene(new Scene(fxmlLoader.load()));
+        // TODO: Make user session id = false
+    }
 
     public void initialize() throws IOException {
         Request request = new Request("@getSongs");
@@ -30,8 +40,8 @@ public class MainController {
 
         DatagramPacket datagramPacket = new DatagramPacket(dataBuffer, dataBuffer.length);
         datagramSocket.receive(datagramPacket);
-        request = SerializationUtils.deserialize(dataBuffer);
-        songList = request.getGetSongArray();
+        Response response = SerializationUtils.deserialize(dataBuffer);
+        songList = response.getSongArrayList();
 
         for (Song song : songList) {
             request = new Request(song.getUser_id(), "@getUser");
@@ -40,10 +50,10 @@ public class MainController {
 
             datagramPacket = new DatagramPacket(dataBuffer, dataBuffer.length);
             datagramSocket.receive(datagramPacket);
-            request = SerializationUtils.deserialize(dataBuffer);
+            response = SerializationUtils.deserialize(dataBuffer);
 
-            songsView.getItems().add(song.getName() + " from: " + request.getUser().getUsername());
+            songsView.getItems().add(song.getName() + " from: " + response.getUser().getUsername() + " id: " +
+                    response.getUser().getId());
         }
-
     }
 }

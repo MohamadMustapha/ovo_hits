@@ -18,10 +18,10 @@ public class SongService implements SongRepository {
         preparedStatement.setInt(3, song.getUser_id());
     }
 
-    private List<Song> getSongList(PreparedStatement preparedStatement) throws SQLException {
+    private ArrayList<Song> getSongList(PreparedStatement preparedStatement) throws SQLException {
         ResultSet resultSet = preparedStatement.executeQuery();
 
-        List<Song> songList = new ArrayList<>();
+        ArrayList<Song> songArrayList = new ArrayList<>();
         while (resultSet.next()) {
             Song song = new Song(
                     resultSet.getBlob("data_"),
@@ -29,10 +29,10 @@ public class SongService implements SongRepository {
                     resultSet.getInt("user_id")
             );
             song.setId(resultSet.getInt("id"));
-            songList.add(song);
+            songArrayList.add(song);
         }
 
-        return songList;
+        return songArrayList;
     }
 
     @Override
@@ -86,14 +86,14 @@ public class SongService implements SongRepository {
     }
 
     @Override
-    public List<Song> getSongs() throws SQLException {
+    public ArrayList<Song> getSongs() throws SQLException {
         String query = "SELECT * FROM SONG";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         return getSongList(preparedStatement);
     }
 
     @Override
-    public List<Song> getSongsById(int id) throws SQLException {
+    public ArrayList<Song> getSongsById(int id) throws SQLException {
         String query = "SELECT * FROM SONG WHERE user_id=?";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, id);

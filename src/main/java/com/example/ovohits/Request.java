@@ -8,14 +8,12 @@ import java.sql.Blob;
 import java.util.ArrayList;
 
 public class Request implements Serializable {
-    private ArrayList<Song> getSongArray;
     private ArrayList<String> addSongArray;
     private ArrayList<String> addUserArray;
     private ArrayList<String> loginArray;
     private Blob songData;
-    private String functionCall;
     private int id;
-    private User user;
+    private String functionCall;
 
     public Request() { }
 
@@ -44,10 +42,6 @@ public class Request implements Serializable {
 
     public Request(String functionCall) { this.functionCall = functionCall; }
 
-    public ArrayList<Song> getGetSongArray() { return getSongArray; }
-
-    public void setGetSongArray(ArrayList<Song> getSongArray) { this.getSongArray = getSongArray; }
-
     public ArrayList<String> getAddSongArray() { return addSongArray; }
 
     public void setAddSongArray(ArrayList<String> addSongArray) { this.addSongArray = addSongArray; }
@@ -64,22 +58,17 @@ public class Request implements Serializable {
 
     public void setSongData(Blob songData) { this.songData = songData; }
 
-    public String getFunctionCall() { return functionCall; }
-
-    public void setFunctionCall(String functionCall) { this.functionCall = functionCall; }
-
     public int getId() { return id; }
 
     public void setId(int id) { this.id = id; }
 
-    public User getUser() { return user; }
+    public String getFunctionCall() { return functionCall; }
 
-    public void setUser(User user) { this.user = user; }
+    public void setFunctionCall(String functionCall) { this.functionCall = functionCall; }
 
     @Override
     public String toString() {
         return "Request [" +
-                "getSongArray=" + getSongArray.toString() + ", " +
                 "addSongArray=" + addSongArray.toString() + ", " +
                 "addUserArray=" + addUserArray.toString() + ", " +
                 "loginArray=" + loginArray.toString() + ", " +

@@ -10,7 +10,7 @@
          <Button layoutX="160.0" layoutY="14.0" mnemonicParsing="false" onAction="#playSong" style="-fx-background-color: black;" text="Play" textFill="WHITE" />
          <Button layoutX="274.0" layoutY="14.0" mnemonicParsing="false" onAction="#pauseSong" style="-fx-background-color: black;" text="Pause" textFill="WHITE" />
          <Button layoutX="386.0" layoutY="14.0" mnemonicParsing="false" onAction="#resetSong" style="-fx-background-color: black;" text="Reset" textFill="WHITE" />
-         <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#playSong" style="-fx-background-color: black;" text="Return" textFill="WHITE" />
+         <Button fx:id="returnButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBack" style="-fx-background-color: black;" text="Return" textFill="WHITE" />
       </AnchorPane>
    </bottom>
    <top>

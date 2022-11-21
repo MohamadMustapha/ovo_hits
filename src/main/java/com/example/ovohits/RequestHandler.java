@@ -71,9 +71,8 @@ public class RequestHandler extends Thread {
     }
 
     public void getSongs() throws Exception {
-        ArrayList<Song> songList = (ArrayList<Song>) new SongService().getSongsById(1);
-        Request response = new Request();
-        response.setGetSongArray(songList);
+        ArrayList<Song> songList = new SongService().getSongsById(request.getId());
+        Response response = new Response(songList);
 
         byte[] dataBuffer = SerializationUtils.serialize(response);
         DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
@@ -82,7 +81,7 @@ public class RequestHandler extends Thread {
 
     public void getUser() throws Exception {
         User user = new UserService().getUser(request.getId());
-        Request response = new Request();
+        Response response = new Response(user != null);
         response.setUser(user);
 
         byte[] dataBuffer = SerializationUtils.serialize(response);
