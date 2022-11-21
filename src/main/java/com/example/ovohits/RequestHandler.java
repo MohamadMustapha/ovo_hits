@@ -30,6 +30,14 @@ public class RequestHandler extends Thread {
                 try { addUser(); }
                 catch (Exception e) { throw new RuntimeException(e); }
             }
+            case "@getSongs" -> {
+                try { getSongs(); }
+                catch (Exception e) { throw new RuntimeException(e); }
+            }
+            case "@getUser" -> {
+                try { getUser(); }
+                catch (Exception e) { throw new RuntimeException(e); }
+            }
             case "@login" -> {
                 try { login(); }
                 catch (Exception e) { throw new RuntimeException(e); }
@@ -40,7 +48,6 @@ public class RequestHandler extends Thread {
 
     public void addSong() throws Exception {
         ArrayList<String> addSongArray = request.getAddSongArray();
-
         new SongService().add(new Song(
                 request.getSongData(),
                 addSongArray.get(0),
@@ -63,6 +70,26 @@ public class RequestHandler extends Thread {
         addSong();
     }
 
+    public void getSongs() throws Exception {
+        ArrayList<Song> songList = (ArrayList<Song>) new SongService().getSongsById(1);
+        Request response = new Request();
+        response.setGetSongArray(songList);
+
+        byte[] dataBuffer = SerializationUtils.serialize(response);
+        DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
+        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, socketAddress));
+    }
+
+    public void getUser() throws Exception {
+        User user = new UserService().getUser(request.getId());
+        Request response = new Request();
+        response.setUser(user);
+
+        byte[] dataBuffer = SerializationUtils.serialize(response);
+        DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
+        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, socketAddress));
+    }
+
     public void login() throws Exception {
         ArrayList<String> loginArray = request.getLoginArray();
         User user = new UserService().getUser(loginArray.get(0));
@@ -70,4 +97,11 @@ public class RequestHandler extends Thread {
         DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
         datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, socketAddress));
     }
+
+//    public boolean verifyEmail(String email) {
+//        if (email == null) return false;
+//        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+//        Pattern pattern = Pattern.compile(emailRegex);
+//        return pattern.matcher(email).matches();
+//    }
 }

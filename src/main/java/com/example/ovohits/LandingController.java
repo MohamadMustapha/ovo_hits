@@ -30,11 +30,11 @@ public class LandingController {
         ArrayList<String> loginArray = new ArrayList<>(Arrays.asList(usernameField.getText(),
                 passwordField.getText()));
 
-        Request request = new Request(null, null, loginArray, null, "@login");
+        Request request = new Request(loginArray);
 
         byte[] dataBuffer = SerializationUtils.serialize(request);
         DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
-        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, InetAddress.getLocalHost(), 6969));
+        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, InetAddress.getByName("10.169.30.40"), 6969));
 
         DatagramPacket datagramPacket = new DatagramPacket(dataBuffer, dataBuffer.length);
         datagramSocket.receive(datagramPacket);
