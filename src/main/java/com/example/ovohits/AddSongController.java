@@ -37,7 +37,7 @@ public class AddSongController {
         fileInputStream.close();
         ArrayList<String> addSongArray = new ArrayList<>(Arrays.asList(songNameInput.getText(), "1"));
 
-        Request request = new Request(null, addSongArray, null, new SerialBlob(songData), "@addSong");
+        Request request = new Request(addSongArray, new SerialBlob(songData));
 
         byte[] dataBuffer = SerializationUtils.serialize(request);
         DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();

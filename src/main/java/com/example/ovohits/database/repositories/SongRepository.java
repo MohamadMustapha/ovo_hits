@@ -15,4 +15,6 @@ public interface SongRepository {
     Song getSong(int id) throws Exception;
 
     List<Song> getSongs() throws SQLException;
+
+    List<Song> getSongsById(int id) throws SQLException;
 }

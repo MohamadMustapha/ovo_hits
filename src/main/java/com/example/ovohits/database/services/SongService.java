@@ -2,6 +2,7 @@ package com.example.ovohits.database.services;
 
 import com.example.ovohits.database.DatabaseConnection;
 import com.example.ovohits.database.models.Song;
+import com.example.ovohits.database.models.User;
 import com.example.ovohits.database.repositories.SongRepository;
 
 import java.sql.*;
@@ -11,10 +12,27 @@ import java.util.List;
 public class SongService implements SongRepository {
     private static final Connection connection = DatabaseConnection.getConnection();
 
-    private void prepare_query(PreparedStatement preparedStatement, Song song) throws Exception {
+    private void prepareQuery(PreparedStatement preparedStatement, Song song) throws Exception {
         preparedStatement.setBlob(1, song.getData());
         preparedStatement.setString(2, song.getName());
         preparedStatement.setInt(3, song.getUser_id());
+    }
+
+    private List<Song> getSongList(PreparedStatement preparedStatement) throws SQLException {
+        ResultSet resultSet = preparedStatement.executeQuery();
+
+        List<Song> songList = new ArrayList<>();
+        while (resultSet.next()) {
+            Song song = new Song(
+                    resultSet.getBlob("data_"),
+                    resultSet.getString("name_"),
+                    resultSet.getInt("user_id")
+            );
+            song.setId(resultSet.getInt("id"));
+            songList.add(song);
+        }
+
+        return songList;
     }
 
     @Override
@@ -23,7 +41,7 @@ public class SongService implements SongRepository {
                        "data_, name_, user_id) " +
                        "VALUES (?, ?, ?)";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
-        prepare_query(preparedStatement, song);
+        prepareQuery(preparedStatement, song);
         return preparedStatement.executeUpdate();
     }
 
@@ -41,7 +59,7 @@ public class SongService implements SongRepository {
                        "data_=?, name_=?, user_id=? " +
                        "WHERE id=?";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
-        prepare_query(preparedStatement, song);
+        prepareQuery(preparedStatement, song);
         preparedStatement.setInt(4, song.getId());
         preparedStatement.executeUpdate();
     }
@@ -71,19 +89,14 @@ public class SongService implements SongRepository {
     public List<Song> getSongs() throws SQLException {
         String query = "SELECT * FROM SONG";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
-        ResultSet resultSet = preparedStatement.executeQuery();
+        return getSongList(preparedStatement);
+    }
 
-        List<Song> songList = new ArrayList<>();
-        while (resultSet.next()) {
-            Song song = new Song(
-                    resultSet.getBlob("data_"),
-                    resultSet.getString("name_"),
-                    resultSet.getInt("user_id")
-            );
-            song.setId(resultSet.getInt("id"));
-            songList.add(song);
-        }
-
-        return songList;
+    @Override
+    public List<Song> getSongsById(int id) throws SQLException {
+        String query = "SELECT * FROM SONG WHERE user_id=?";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setInt(1, id);
+        return getSongList(preparedStatement);
     }
 }

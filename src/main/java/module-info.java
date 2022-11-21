@@ -12,4 +12,7 @@ module com.example.ovohits {
 
     exports com.example.ovohits;
     opens com.example.ovohits to javafx.fxml;
+
+    exports com.example.ovohits.database.models;
+    opens com.example.ovohits.database.models to javafx.fxml;
 }
