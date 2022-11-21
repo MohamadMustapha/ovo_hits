@@ -7,11 +7,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.apache.commons.lang3.SerializationUtils;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class LandingController {
     @FXML
@@ -25,18 +27,14 @@ public class LandingController {
         if (usernameField.getText().isBlank()) return;
         if (passwordField.getText().isBlank()) return;
 
-        byte[] dataBuffer;
+        ArrayList<String> loginArray = new ArrayList<>(Arrays.asList(usernameField.getText(),
+                passwordField.getText()));
+
+        Request request = new Request(null, null, loginArray, null, "@login");
+
+        byte[] dataBuffer = SerializationUtils.serialize(request);
         DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
-        InetAddress inetAddress = InetAddress.getLocalHost();
-
-        dataBuffer = usernameField.getText().getBytes();
-        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, inetAddress, 6969));
-
-        dataBuffer = passwordField.getText().getBytes();
-        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, inetAddress, 6969));
-
-        dataBuffer = "@login".getBytes();
-        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, inetAddress, 6969));
+        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, InetAddress.getLocalHost(), 6969));
 
         DatagramPacket datagramPacket = new DatagramPacket(dataBuffer, dataBuffer.length);
         datagramSocket.receive(datagramPacket);

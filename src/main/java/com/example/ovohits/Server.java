@@ -4,18 +4,10 @@ import com.example.ovohits.database.models.Song;
 import com.example.ovohits.database.models.User;
 import com.example.ovohits.database.services.SongService;
 import com.example.ovohits.database.services.UserService;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 import javax.sql.rowset.serial.SerialBlob;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.*;
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -37,26 +29,12 @@ public class Server {
         DatagramSocket datagramSocket = SocketConnection.getServerDatagramSocket(port);
         System.out.println("Server running at Port: " + port);
 
-        ArrayList<byte[]> dataBufferArray = new ArrayList<>();
         while (true) {
-            byte[] receivedDataBuffer = new byte[16777215];
-            DatagramPacket receiver = new DatagramPacket(receivedDataBuffer, receivedDataBuffer.length);
+            byte[] bufferData = new byte[16777215];
+            DatagramPacket receiver = new DatagramPacket(bufferData, bufferData.length);
             datagramSocket.receive(receiver);
-
-            switch (byteToString(receivedDataBuffer)) {
-                case "@addUser" -> {
-                    addUser(dataBufferArray);
-                    dataBufferArray.clear();
-                }
-                case "@login" -> {
-                    login(dataBufferArray, receiver.getSocketAddress());
-                    dataBufferArray.clear();
-                }
-                default -> {
-                    dataBufferArray.add(receivedDataBuffer);
-                    System.out.println("Client sent: " + byteToString(receivedDataBuffer));
-                }
-            }
+            Thread requestHandler = new RequestHandler(bufferData, receiver.getSocketAddress());
+            requestHandler.start();
         }
     }
 
