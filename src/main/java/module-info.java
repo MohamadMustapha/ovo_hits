@@ -3,12 +3,12 @@ module com.example.ovohits {
     requires javafx.fxml;
     requires java.sql;
 
-    requires org.controlsfx.controls;
+//    requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
     requires mysql.connector.j;
     requires java.sql.rowset;
-    requires org.apache.commons.lang3;
+//    requires org.apache.commons.lang3;
 
     exports com.example.ovohits;
     opens com.example.ovohits to javafx.fxml;
