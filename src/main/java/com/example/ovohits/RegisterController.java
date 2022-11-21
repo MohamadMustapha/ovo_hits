@@ -57,7 +57,7 @@ public class RegisterController {
         fileInputStream.close();
         ArrayList<String> addSongArray = (ArrayList<String>) Arrays.asList(songNameInput.getText(), null);
 
-        Request request = new Request(addUserArray, addSongArray, null, new SerialBlob(songData), "@addUser");
+        Request request = new Request(addUserArray, addSongArray, new SerialBlob(songData));
 
         byte[] dataBuffer = SerializationUtils.serialize(request);
         DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
