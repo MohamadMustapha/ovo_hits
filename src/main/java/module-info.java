@@ -8,6 +8,7 @@ module com.example.ovohits {
     requires org.kordamp.bootstrapfx.core;
     requires mysql.connector.j;
     requires java.sql.rowset;
+    requires org.apache.commons.lang3;
 
     exports com.example.ovohits;
     opens com.example.ovohits to javafx.fxml;
