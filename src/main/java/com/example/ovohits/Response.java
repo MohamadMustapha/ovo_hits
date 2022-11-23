@@ -1,20 +1,19 @@
 package com.example.ovohits;
 
-import com.example.ovohits.database.models.Song;
-import com.example.ovohits.database.models.User;
-
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Response implements Serializable {
-    private ArrayList<Song> songArrayList;
+    private ArrayList<byte[]> songDataArrayList;
     private boolean exists;
-    private Song song;
-    private User user;
+    private byte[] songData;
+    private byte[] userData;
+    private int userId;
 
     public Response() { }
 
-    public Response(ArrayList<Song> songArrayList) { this.songArrayList = songArrayList; }
+    public Response(ArrayList<byte[]> songDataArrayList) { this.songDataArrayList = songDataArrayList; }
 
     public Response(boolean exists) { this.exists = exists; }
 
@@ -22,24 +21,31 @@ public class Response implements Serializable {
 
     public void setExists(boolean exists) { this.exists = exists; }
 
-    public ArrayList<Song> getSongArrayList() { return songArrayList; }
+    public ArrayList<byte[]> getSongDataArrayList() { return songDataArrayList; }
 
-    public void setSongArrayList(ArrayList<Song> songArrayList) { this.songArrayList = songArrayList; }
+    public void setSongDataArrayList(ArrayList<byte[]> songDataArrayList) {
+        this.songDataArrayList = songDataArrayList;
+    }
 
-    public Song getSong() { return song; }
+    public byte[] getSongData() { return songData; }
 
-    public void setSong(Song song) { this.song = song; }
+    public void setSongData(byte[] songData) { this.songData = songData; }
 
-    public User getUser() { return user; }
+    public byte[] getUserData() { return userData; }
 
-    public void setUser(User user) { this.user = user; }
+    public void setUserData(byte[] userData) { this.userData = userData; }
+
+    public int getUserId() { return userId; }
+
+    public void setUserId(int userId) { this.userId = userId; }
 
     @Override
     public String toString() {
         return "Request [" +
-                "songArrayList=" + songArrayList.toString() + ", " +
+                "songArrayList=" + songDataArrayList.toString() + ", " +
                 "exists=" + exists + ", " +
-                "song=" + song + ", " +
-                "user=" + user + "]";
+                "song=" + Arrays.toString(songData) + ", " +
+                "user=" + Arrays.toString(userData) +
+                "userId=" + userId + "]";
     }
 }

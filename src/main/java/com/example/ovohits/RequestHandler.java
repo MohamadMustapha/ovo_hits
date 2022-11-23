@@ -6,10 +6,7 @@ import com.example.ovohits.database.services.SongService;
 import com.example.ovohits.database.services.UserService;
 import org.apache.commons.lang3.SerializationUtils;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.SourceDataLine;
+import javax.sql.rowset.serial.SerialBlob;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -18,20 +15,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class RequestHandler extends Thread {
-    public Request request;
-    public SocketAddress socketAddress;
+    private final DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
+    private final Request request;
+    private final SocketAddress socketAddress;
 
     public RequestHandler(byte[] bufferData, SocketAddress socketAddress) {
         this.request = SerializationUtils.deserialize(bufferData);
         this.socketAddress = socketAddress;
     }
 
-    private void sendDatagramPacket(byte[] dataBuffer) throws IOException {
-        DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
-        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, socketAddress));
-    }
-
     public void run() {
+        System.out.println("Function call: " + request.getFunctionCall());
         switch (request.getFunctionCall()) {
             case "@addSong" -> {
                 try { addSong(); }
@@ -68,7 +62,7 @@ public class RequestHandler extends Thread {
     public void addSong() throws SQLException {
         ArrayList<String> addSongArray = request.getAddSongArray();
         new SongService().add(new Song(
-                request.getSongData(),
+                new SerialBlob(request.getSongData()),
                 addSongArray.get(0),
                 Integer.parseInt(addSongArray.get(1))
         ));
@@ -92,29 +86,34 @@ public class RequestHandler extends Thread {
     public void getSong() throws IOException, SQLException {
         Song song = new SongService().getSong(request.getModelId());
         Response response = new Response(song != null);
-        response.setSong(song);
-        sendDatagramPacket(SerializationUtils.serialize(response));
+        response.setSongData(SerializationUtils.serialize(song));
+        byte[] dataBuffer = SerializationUtils.serialize(response);
+        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, socketAddress));
     }
 
     public void getSongs() throws IOException, SQLException {
-        ArrayList<Song> songList = new SongService().getSongsById(request.getModelId());
-        Response response = new Response(songList);
-        sendDatagramPacket(SerializationUtils.serialize(response));
+        ArrayList<byte[]> songDataList = new ArrayList<>(new SongService().getSongsById(request.getModelId())
+                .stream().map(SerializationUtils::serialize).toList());
+        Response response = new Response(songDataList);
+        byte[] dataBuffer = SerializationUtils.serialize(response);
+        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, socketAddress));
     }
 
     public void getUser() throws IOException, SQLException {
         User user = new UserService().getUser(request.getModelId());
         Response response = new Response(user != null);
-        response.setUser(user);
-        sendDatagramPacket(SerializationUtils.serialize(response));
+        response.setUserData(SerializationUtils.serialize(user));
+        byte[] dataBuffer = SerializationUtils.serialize(response);
+        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, socketAddress));
     }
 
     public void login() throws IOException, SQLException {
         ArrayList<String> loginArray = request.getLoginArray();
         User user = new UserService().getUser(loginArray.get(0));
         Response response = new Response(user != null && user.getPassword().equals(loginArray.get(1)));
-        response.setUser(user);
-        sendDatagramPacket(SerializationUtils.serialize(response));
+        response.setUserId(user != null ? user.getId() : -1);
+        byte[] dataBuffer = SerializationUtils.serialize(response);
+        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, socketAddress));
     }
 
     public void playSong() {

@@ -4,6 +4,7 @@ import com.example.ovohits.database.DatabaseConnection;
 import com.example.ovohits.database.models.Song;
 import com.example.ovohits.database.repositories.SongRepository;
 
+import javax.sql.rowset.serial.SerialBlob;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -22,7 +23,7 @@ public class SongService implements SongRepository {
         ArrayList<Song> songArrayList = new ArrayList<>();
         while (resultSet.next()) {
             Song song = new Song(
-                    resultSet.getBlob("data_"),
+                    new SerialBlob(resultSet.getBlob("data_")),
                     resultSet.getString("name_"),
                     resultSet.getInt("user_id")
             );
@@ -75,7 +76,7 @@ public class SongService implements SongRepository {
         while (resultSet.next()) {
             found = true;
             song.setId(resultSet.getInt("id"));
-            song.setData(resultSet.getBlob("data_"));
+            song.setData(new SerialBlob(resultSet.getBlob("data_")));
             song.setName(resultSet.getString("name_"));
             song.setUser_id(resultSet.getInt("user_id"));
         }
