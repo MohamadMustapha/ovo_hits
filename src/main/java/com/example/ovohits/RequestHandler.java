@@ -6,9 +6,15 @@ import com.example.ovohits.database.services.SongService;
 import com.example.ovohits.database.services.UserService;
 import org.apache.commons.lang3.SerializationUtils;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.SourceDataLine;
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketAddress;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class RequestHandler extends Thread {
@@ -20,6 +26,11 @@ public class RequestHandler extends Thread {
         this.socketAddress = socketAddress;
     }
 
+    private void sendDatagramPacket(byte[] dataBuffer) throws IOException {
+        DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
+        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, socketAddress));
+    }
+
     public void run() {
         switch (request.getFunctionCall()) {
             case "@addSong" -> {
@@ -28,6 +39,10 @@ public class RequestHandler extends Thread {
             }
             case "@addUser" -> {
                 try { addUser(); }
+                catch (Exception e) { throw new RuntimeException(e); }
+            }
+            case "@getSong" -> {
+                try { getSong(); }
                 catch (Exception e) { throw new RuntimeException(e); }
             }
             case "@getSongs" -> {
@@ -42,11 +57,15 @@ public class RequestHandler extends Thread {
                 try { login(); }
                 catch (Exception e) { throw new RuntimeException(e); }
             }
+            case "@playSong" -> {
+                try { playSong(); }
+                catch (Exception e) { throw new RuntimeException(e); }
+            }
             default -> System.out.println("Invalid function call!");
         }
     }
 
-    public void addSong() throws Exception {
+    public void addSong() throws SQLException {
         ArrayList<String> addSongArray = request.getAddSongArray();
         new SongService().add(new Song(
                 request.getSongData(),
@@ -55,7 +74,7 @@ public class RequestHandler extends Thread {
         ));
     }
 
-    public void addUser() throws Exception {
+    public void addUser() throws SQLException {
         ArrayList<String> addUserArray = request.getAddUserArray();
         int user_id = new UserService().add(new User(
            addUserArray.get(0),
@@ -70,38 +89,35 @@ public class RequestHandler extends Thread {
         addSong();
     }
 
-    public void getSongs() throws Exception {
-        ArrayList<Song> songList = (ArrayList<Song>) new SongService().getSongsById(1);
-        Request response = new Request();
-        response.setGetSongArray(songList);
-
-        byte[] dataBuffer = SerializationUtils.serialize(response);
-        DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
-        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, socketAddress));
+    public void getSong() throws IOException, SQLException {
+        Song song = new SongService().getSong(request.getModelId());
+        Response response = new Response(song != null);
+        response.setSong(song);
+        sendDatagramPacket(SerializationUtils.serialize(response));
     }
 
-    public void getUser() throws Exception {
-        User user = new UserService().getUser(request.getId());
-        Request response = new Request();
+    public void getSongs() throws IOException, SQLException {
+        ArrayList<Song> songList = new SongService().getSongsById(request.getModelId());
+        Response response = new Response(songList);
+        sendDatagramPacket(SerializationUtils.serialize(response));
+    }
+
+    public void getUser() throws IOException, SQLException {
+        User user = new UserService().getUser(request.getModelId());
+        Response response = new Response(user != null);
         response.setUser(user);
-
-        byte[] dataBuffer = SerializationUtils.serialize(response);
-        DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
-        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, socketAddress));
+        sendDatagramPacket(SerializationUtils.serialize(response));
     }
 
-    public void login() throws Exception {
+    public void login() throws IOException, SQLException {
         ArrayList<String> loginArray = request.getLoginArray();
         User user = new UserService().getUser(loginArray.get(0));
-        byte[] dataBuffer = user.getPassword().equals(loginArray.get(1)) ? new byte[]{(byte) 1} : new byte[]{(byte) 0};
-        DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
-        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, socketAddress));
+        Response response = new Response(user != null && user.getPassword().equals(loginArray.get(1)));
+        response.setUser(user);
+        sendDatagramPacket(SerializationUtils.serialize(response));
     }
 
-//    public boolean verifyEmail(String email) {
-//        if (email == null) return false;
-//        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-//        Pattern pattern = Pattern.compile(emailRegex);
-//        return pattern.matcher(email).matches();
-//    }
+    public void playSong() {
+        // TODO: Download and play audio packets sent from frontend
+    }
 }

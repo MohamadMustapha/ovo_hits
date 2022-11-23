@@ -1,21 +1,16 @@
 package com.example.ovohits;
 
-import com.example.ovohits.database.models.Song;
-import com.example.ovohits.database.models.User;
-
 import java.io.Serializable;
 import java.sql.Blob;
 import java.util.ArrayList;
 
 public class Request implements Serializable {
-    private ArrayList<Song> getSongArray;
     private ArrayList<String> addSongArray;
     private ArrayList<String> addUserArray;
     private ArrayList<String> loginArray;
     private Blob songData;
+    private int modelId;
     private String functionCall;
-    private int id;
-    private User user;
 
     public Request() { }
 
@@ -37,16 +32,12 @@ public class Request implements Serializable {
         this.functionCall = "@login";
     }
 
-    public Request(int id, String functionCall) {
-        this.id = id;
+    public Request(int modelId, String functionCall) {
+        this.modelId = modelId;
         this.functionCall = functionCall;
     }
 
     public Request(String functionCall) { this.functionCall = functionCall; }
-
-    public ArrayList<Song> getGetSongArray() { return getSongArray; }
-
-    public void setGetSongArray(ArrayList<Song> getSongArray) { this.getSongArray = getSongArray; }
 
     public ArrayList<String> getAddSongArray() { return addSongArray; }
 
@@ -64,26 +55,22 @@ public class Request implements Serializable {
 
     public void setSongData(Blob songData) { this.songData = songData; }
 
+    public int getModelId() { return modelId; }
+
+    public void setModelId(int modelId) { this.modelId = modelId; }
+
     public String getFunctionCall() { return functionCall; }
 
     public void setFunctionCall(String functionCall) { this.functionCall = functionCall; }
 
-    public int getId() { return id; }
-
-    public void setId(int id) { this.id = id; }
-
-    public User getUser() { return user; }
-
-    public void setUser(User user) { this.user = user; }
-
     @Override
     public String toString() {
         return "Request [" +
-                "getSongArray=" + getSongArray.toString() + ", " +
                 "addSongArray=" + addSongArray.toString() + ", " +
                 "addUserArray=" + addUserArray.toString() + ", " +
                 "loginArray=" + loginArray.toString() + ", " +
                 "songData=" + songData + ", " +
+                "modelId=" + modelId + ", " +
                 "functionCall" + functionCall + "]";
     }
 }

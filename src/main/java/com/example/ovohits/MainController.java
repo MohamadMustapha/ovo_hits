@@ -1,49 +1,65 @@
 package com.example.ovohits;
 
 import com.example.ovohits.database.models.Song;
-import com.example.ovohits.database.models.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.ButtonBase;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
-import javafx.util.Duration;
+
 import org.apache.commons.lang3.SerializationUtils;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.ArrayList;
 
 public class MainController {
-    private ArrayList<Song> songList;
+    @FXML
+    private Button returnButton;
+    @FXML
+    private Button uploadSongButton;
+    @FXML
+    private ListView<String> myPlaylistView;
     @FXML
     private ListView<String> songsView;
 
-    public void initialize() throws IOException {
-        Request request = new Request("@getSongs");
+    private Response sendRequest(Request request) throws IOException {
         byte[] dataBuffer = SerializationUtils.serialize(request);
         DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
         datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, InetAddress.getLocalHost(), 6969));
 
         DatagramPacket datagramPacket = new DatagramPacket(dataBuffer, dataBuffer.length);
         datagramSocket.receive(datagramPacket);
-        request = SerializationUtils.deserialize(dataBuffer);
-        songList = request.getGetSongArray();
+        return SerializationUtils.deserialize(dataBuffer);
+    }
 
-        for (Song song : songList) {
-            request = new Request(song.getUser_id(), "@getUser");
-            dataBuffer = SerializationUtils.serialize(request);
-            datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, InetAddress.getLocalHost(), 6969));
+    public void addToMyPlaylist() { myPlaylistView.getItems().add(songsView.getSelectionModel().getSelectedItem()); }
 
-            datagramPacket = new DatagramPacket(dataBuffer, dataBuffer.length);
-            datagramSocket.receive(datagramPacket);
-            request = SerializationUtils.deserialize(dataBuffer);
+    public void goBack() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(AddSong.class.getResource("Landing.fxml"));
+        Stage stage = (Stage) returnButton.getScene().getWindow();
+        stage.setScene(new Scene(fxmlLoader.load()));
+        Client.setSessionId(null);
+    }
 
-            songsView.getItems().add(song.getName() + " from: " + request.getUser().getUsername());
+    public void initialize() throws IOException {
+        Response response = sendRequest(new Request("@getSongs"));
+        for (Song song : response.getSongArrayList()) {
+            response = sendRequest(new Request("@getUser"));
+            songsView.getItems().add(song.getName() + " from: " + response.getUser().getUsername() + " id: " +
+                    song.getId());
         }
+    }
 
+    public void playSong() {
+        // TODO: Send partial audio packets to backend and download/stream the file (ex: YouTube)
+    }
+
+    public void uploadSong() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(AddSong.class.getResource("AddSong.fxml"));
+        Stage stage = (Stage) uploadSongButton.getScene().getWindow();
+        stage.setScene(new Scene(fxmlLoader.load()));
     }
 }

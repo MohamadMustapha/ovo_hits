@@ -9,7 +9,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class UserService implements UserRepository {
     private static final Connection connection = DatabaseConnection.getConnection();
@@ -86,12 +85,12 @@ public class UserService implements UserRepository {
     }
 
     @Override
-    public List<User> getUsers() throws SQLException {
+    public ArrayList<User> getUsers() throws SQLException {
         String query = "SELECT * FROM USER";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         ResultSet resultSet = preparedStatement.executeQuery();
 
-        List<User> userList = new ArrayList<>();
+        ArrayList<User> userList = new ArrayList<>();
         while (resultSet.next()) {
             User user = new User(
                     resultSet.getString("email"),

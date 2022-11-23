@@ -11,7 +11,6 @@ import org.apache.commons.lang3.SerializationUtils;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -34,13 +33,14 @@ public class LandingController {
 
         byte[] dataBuffer = SerializationUtils.serialize(request);
         DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
-        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, InetAddress.getByName("10.169.30.40"), 6969));
+        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length,
+                SocketConnection.getInetAddress(), 6969));
 
         DatagramPacket datagramPacket = new DatagramPacket(dataBuffer, dataBuffer.length);
         datagramSocket.receive(datagramPacket);
         Response response = SerializationUtils.deserialize(dataBuffer);
         if (response.getExists()) {
-            UserSession.setSessionId(response.getUser().getId());
+            Client.setSessionId(response.getUser().getId());
             FXMLLoader fxmlLoader = new FXMLLoader(LandingController.class.getResource("Main.fxml"));
             Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.setScene(new Scene(fxmlLoader.load()));

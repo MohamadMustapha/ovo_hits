@@ -8,13 +8,13 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-//import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.SerializationUtils;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -27,25 +27,26 @@ public class AddSongController {
     @FXML
     private TextField songNameInput;
 
-    public void addSong() throws Exception {
+    public void addSong() throws IOException, SQLException {
         if (songFile.exists()) return;
         if (listView.getItems().isEmpty()) return;
 
-        FileInputStream fileInputStream = new FileInputStream(songFile);
         byte[] songData = new byte[(int) songFile.length()];
-        if (fileInputStream.read(songData) == -1) throw new IOException();
+        FileInputStream fileInputStream = new FileInputStream(songFile);
+        if (fileInputStream.read(songData) == -1) throw new RuntimeException();
         fileInputStream.close();
-        ArrayList<String> addSongArray = new ArrayList<>(Arrays.asList(songNameInput.getText(), "1"));
-
+        ArrayList<String> addSongArray = new ArrayList<>(Arrays.asList(songNameInput.getText(),
+                Integer.toString(Client.getSessionId())));
         Request request = new Request(addSongArray, new SerialBlob(songData));
 
         byte[] dataBuffer = SerializationUtils.serialize(request);
         DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
-        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, InetAddress.getLocalHost(), 6969));
+        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length,
+                SocketConnection.getInetAddress(), 6969));
     }
 
     public void goBack() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(AddSong.class.getResource("Landing.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(AddSong.class.getResource("Main.fxml"));
         Stage stage = (Stage) returnButton.getScene().getWindow();
         stage.setScene(new Scene(fxmlLoader.load()));
     }
@@ -53,7 +54,6 @@ public class AddSongController {
     public void uploadSong() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("MP3 Files", "*.mp3"));
-
         songFile = fileChooser.showOpenDialog(null);
         if (songFile != null) {
             if (listView.getItems().isEmpty())

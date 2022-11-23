@@ -3,7 +3,7 @@ package com.example.ovohits.database.repositories;
 import com.example.ovohits.database.models.User;
 
 import java.sql.SQLException;
-import java.util.List;
+import java.util.ArrayList;
 
 public interface UserRepository {
     int add(User user) throws SQLException;
@@ -16,5 +16,5 @@ public interface UserRepository {
 
     User getUser(String username) throws SQLException;
 
-    List<User> getUsers() throws SQLException;
+    ArrayList<User> getUsers() throws SQLException;
 }
