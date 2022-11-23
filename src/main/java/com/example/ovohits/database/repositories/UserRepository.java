@@ -4,7 +4,6 @@ import com.example.ovohits.database.models.User;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 public interface UserRepository {
     int add(User user) throws SQLException;

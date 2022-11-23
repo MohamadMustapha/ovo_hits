@@ -1,8 +1,5 @@
 package com.example.ovohits;
 
-import com.example.ovohits.database.models.Song;
-import com.example.ovohits.database.models.User;
-
 import java.io.Serializable;
 import java.sql.Blob;
 import java.util.ArrayList;
@@ -12,7 +9,7 @@ public class Request implements Serializable {
     private ArrayList<String> addUserArray;
     private ArrayList<String> loginArray;
     private Blob songData;
-    private int id;
+    private int modelId;
     private String functionCall;
 
     public Request() { }
@@ -35,8 +32,8 @@ public class Request implements Serializable {
         this.functionCall = "@login";
     }
 
-    public Request(int id, String functionCall) {
-        this.id = id;
+    public Request(int modelId, String functionCall) {
+        this.modelId = modelId;
         this.functionCall = functionCall;
     }
 
@@ -58,9 +55,9 @@ public class Request implements Serializable {
 
     public void setSongData(Blob songData) { this.songData = songData; }
 
-    public int getId() { return id; }
+    public int getModelId() { return modelId; }
 
-    public void setId(int id) { this.id = id; }
+    public void setModelId(int modelId) { this.modelId = modelId; }
 
     public String getFunctionCall() { return functionCall; }
 
@@ -73,6 +70,7 @@ public class Request implements Serializable {
                 "addUserArray=" + addUserArray.toString() + ", " +
                 "loginArray=" + loginArray.toString() + ", " +
                 "songData=" + songData + ", " +
+                "modelId=" + modelId + ", " +
                 "functionCall" + functionCall + "]";
     }
 }

@@ -15,9 +15,10 @@ import javax.sql.rowset.serial.SerialBlob;
 import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 public class RegisterController {
     private File songFile = null;
@@ -38,12 +39,18 @@ public class RegisterController {
     @FXML
     private TextField usernameInput;
 
-    public void addUser() throws Exception {
+    private boolean verifyEmail() {
+        Pattern pattern = Pattern.compile(
+                "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
+        return pattern.matcher(emailInput.getText()).matches();
+    }
+
+    public void addUser() throws IOException, SQLException {
         if (firstNameInput.getText().isBlank()) return;
         if (lastNameInput.getText().isBlank()) return;
         if (usernameInput.getText().isBlank()) return;
         if (passwordInput.getText().isBlank()) return;
-        if (emailInput.getText().isBlank()) return;
+        if (emailInput.getText().isBlank() || !verifyEmail()) return;
 
         if (songFile.exists()) return;
         if (listView.getItems().isEmpty()) return;
@@ -61,7 +68,8 @@ public class RegisterController {
 
         byte[] dataBuffer = SerializationUtils.serialize(request);
         DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
-        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, InetAddress.getLocalHost(), 6969));
+        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length,
+                SocketConnection.getInetAddress(), 6969));
     }
 
     public void goBack() throws IOException {

@@ -27,7 +27,8 @@
                <Font size="32.0" />
             </font>
          </Label>
-         <Button layoutX="90.0" layoutY="295.0" mnemonicParsing="false" onAction="#goToAddSong" style="-fx-background-color: black;" text="Add" textFill="WHITE" />
+         <Button layoutX="90.0" layoutY="295.0" mnemonicParsing="false" onAction="#addToMyPlaylist" style="-fx-background-color: black;" text="Add" textFill="WHITE" />
+         <Button fx:id="uploadSongButton" layoutX="442.0" layoutY="295.0" mnemonicParsing="false" onAction="#uploadSong" style="-fx-background-color: black;" text="Upload Song" textFill="WHITE" />
       </AnchorPane>
    </top>
 </BorderPane>
