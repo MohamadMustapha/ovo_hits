@@ -8,15 +8,15 @@
    <bottom>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #005da3;" BorderPane.alignment="CENTER">
          <Button layoutX="160.0" layoutY="14.0" mnemonicParsing="false" onAction="#playSong" style="-fx-background-color: black;" text="Play" textFill="WHITE" />
-         <Button layoutX="274.0" layoutY="14.0" mnemonicParsing="false" onAction="#pauseSong" style="-fx-background-color: black;" text="Pause" textFill="WHITE" />
-         <Button layoutX="386.0" layoutY="14.0" mnemonicParsing="false" onAction="#resetSong" style="-fx-background-color: black;" text="Reset" textFill="WHITE" />
+         <Button layoutX="274.0" layoutY="14.0" mnemonicParsing="false" style="-fx-background-color: black;" text="Pause" textFill="WHITE" />
+         <Button layoutX="386.0" layoutY="14.0" mnemonicParsing="false" style="-fx-background-color: black;" text="Reset" textFill="WHITE" />
          <Button fx:id="returnButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBack" style="-fx-background-color: black;" text="Return" textFill="WHITE" />
       </AnchorPane>
    </bottom>
    <top>
       <AnchorPane prefHeight="347.0" prefWidth="600.0" style="-fx-background-color: #005da3;" BorderPane.alignment="CENTER">
          <ListView fx:id="myPlaylistView" layoutX="14.0" layoutY="74.0" prefHeight="200.0" prefWidth="200.0" />
-         <ListView fx:id="songsView" layoutX="386.0" layoutY="74.0" onMouseClicked="#getSongId" prefHeight="197.0" prefWidth="200.0" />
+         <ListView fx:id="songsView" layoutX="386.0" layoutY="74.0" prefHeight="197.0" prefWidth="200.0" />
          <Label layoutX="41.0" layoutY="16.0" prefHeight="55.0" prefWidth="146.0" text="My Playlist" textAlignment="CENTER" textFill="#faefef">
             <font>
                <Font size="32.0" />

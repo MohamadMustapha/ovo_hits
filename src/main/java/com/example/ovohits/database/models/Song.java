@@ -1,16 +1,18 @@
 package com.example.ovohits.database.models;
 
+import javax.sql.rowset.serial.SerialBlob;
+import java.io.Serializable;
 import java.sql.Blob;
 
-public class Song {
+public class Song implements Serializable {
     private int id;
-    private Blob data;
+    private SerialBlob data;
     private String name;
     private int user_id;
 
     public Song() { }
 
-    public Song(Blob data, String name, int user_id) {
+    public Song(SerialBlob data, String name, int user_id) {
         this.data = data;
         this.name = name;
         this.user_id = user_id;
@@ -20,9 +22,9 @@ public class Song {
 
     public void setId(int id) { this.id = id; }
 
-    public Blob getData() { return data; }
+    public SerialBlob getData() { return data; }
 
-    public void setData(Blob data) { this.data = data; }
+    public void setData(SerialBlob data) { this.data = data; }
 
     public String getName() { return name; }
 

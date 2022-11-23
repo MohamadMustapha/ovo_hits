@@ -40,7 +40,7 @@ public class LandingController {
         datagramSocket.receive(datagramPacket);
         Response response = SerializationUtils.deserialize(dataBuffer);
         if (response.getExists()) {
-            Client.setSessionId(response.getUser().getId());
+            Client.setSessionId(response.getUserId());
             FXMLLoader fxmlLoader = new FXMLLoader(LandingController.class.getResource("Main.fxml"));
             Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.setScene(new Scene(fxmlLoader.load()));
