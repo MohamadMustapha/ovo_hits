@@ -25,6 +25,6 @@ public class SocketConnection {
 
     public static InetAddress getInetAddress() throws UnknownHostException {
         if (inetAddress != null) return inetAddress;
-        return inetAddress = InetAddress.getLocalHost();
+        return inetAddress = InetAddress.getByName("10.169.34.174");
     }
 }
