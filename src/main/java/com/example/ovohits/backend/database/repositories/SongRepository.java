@@ -15,6 +15,4 @@ public interface SongRepository {
     Song getSong(int id) throws Exception;
 
     ArrayList<Song> getSongs() throws SQLException;
-
-    ArrayList<Song> getSongsById(int id) throws SQLException;
 }

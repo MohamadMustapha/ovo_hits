@@ -14,7 +14,6 @@ import org.apache.commons.lang3.SerializationUtils;
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.*;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,19 +54,31 @@ public class RegisterController {
         if (!songFile.exists()) return;
         if (listView.getItems().isEmpty()) return;
 
-        ArrayList<String> addUserArray = (ArrayList<String>) Arrays.asList(emailInput.getText(),
-                firstNameInput.getText(), lastNameInput.getText(), passwordInput.getText(), usernameInput.getText());
         FileInputStream fileInputStream = new FileInputStream(songFile);
         byte[] songData = new byte[(int) songFile.length()];
         if (fileInputStream.read(songData) == -1) throw new IOException();
         fileInputStream.close();
-        ArrayList<String> addSongArray = (ArrayList<String>) Arrays.asList(songNameInput.getText(), null);
-        Request request = new Request(addUserArray, addSongArray, new SerialBlob(songData));
+
+        ArrayList<String> addUserArray = new ArrayList<>(Arrays.asList(
+                emailInput.getText(),
+                firstNameInput.getText(),
+                lastNameInput.getText(),
+                passwordInput.getText(),
+                usernameInput.getText()));
+        ArrayList<String> addSongArray = new ArrayList<>(Arrays.asList(
+                songNameInput.getText(),
+                null));
+        Request request = new Request(
+                addUserArray,
+                addSongArray,
+                new SerialBlob(songData));
 
         byte[] dataBuffer = SerializationUtils.serialize(request);
-        DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
-        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length,
-                SocketConnection.getInetAddress(), 6969));
+        SocketConnection.getDatagramSocket().send(new DatagramPacket(
+                dataBuffer,
+                dataBuffer.length,
+                SocketConnection.getInetAddress(),
+                SocketConnection.getPort()));
     }
 
     public void goBack() throws IOException {
@@ -75,10 +86,10 @@ public class RegisterController {
         Stage stage = (Stage) returnButton.getScene().getWindow();
         stage.setScene(new Scene(fxmlLoader.load()));
     }
+
     public void uploadSong() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("MP3 Files", "*.mp3"));
-
         songFile = fileChooser.showOpenDialog(null);
         if (songFile != null) {
             if (listView.getItems().isEmpty())

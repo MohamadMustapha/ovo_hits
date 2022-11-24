@@ -37,19 +37,26 @@ public class AddSongController {
         FileInputStream fileInputStream = new FileInputStream(songFile);
         if (fileInputStream.read(songData) == -1) throw new RuntimeException();
         fileInputStream.close();
-        ArrayList<String> addSongArray = new ArrayList<>(Arrays.asList(songNameInput.getText(),
-                Integer.toString(1
-//                        Client.getSessionId()
-                )));
-        Request request = new Request(addSongArray, new SerialBlob(songData));
+
+        ArrayList<String> addSongArray = new ArrayList<>(Arrays.asList(
+                songNameInput.getText(),
+                Integer.toString(Client.getSessionId())));
+        Request request = new Request(
+                addSongArray,
+                new SerialBlob(songData));
+
         byte[] dataBuffer = SerializationUtils.serialize(request);
         DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
         List<List<Byte>> dataBuffers = Lists.partition(
-                new ArrayList<>(Bytes.asList(dataBuffer)), 64000);
+                new ArrayList<>(Bytes.asList(dataBuffer)),
+                64000);
         for (List<Byte> dataBufferList : dataBuffers) {
             dataBuffer = ArrayUtils.toPrimitive(dataBufferList.toArray(new Byte[0]));
-            datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length,
-                    SocketConnection.getInetAddress(), SocketConnection.getPort()));
+            datagramSocket.send(new DatagramPacket(
+                    dataBuffer,
+                    dataBuffer.length,
+                    SocketConnection.getInetAddress(),
+                    SocketConnection.getPort()));
         }
     }
 

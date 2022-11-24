@@ -90,12 +90,4 @@ public class SongService implements SongRepository {
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         return getSongList(preparedStatement);
     }
-
-    @Override
-    public ArrayList<Song> getSongsById(int id) throws SQLException {
-        String query = "SELECT * FROM SONG WHERE user_id=?";
-        PreparedStatement preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setInt(1, id);
-        return getSongList(preparedStatement);
-    }
 }

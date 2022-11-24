@@ -30,15 +30,22 @@ public class LandingController {
         if (usernameField.getText().isBlank()) return;
         if (passwordField.getText().isBlank()) return;
 
-        ArrayList<String> loginArray = new ArrayList<>(Arrays.asList(usernameField.getText(),
+        ArrayList<String> loginArray = new ArrayList<>(Arrays.asList(
+                usernameField.getText(),
                 passwordField.getText()));
         Request request = new Request(loginArray);
+
         byte[] dataBuffer = SerializationUtils.serialize(request);
         DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
-        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length,
-                SocketConnection.getInetAddress(), SocketConnection.getPort()));
+        datagramSocket.send(new DatagramPacket(
+                dataBuffer,
+                dataBuffer.length,
+                SocketConnection.getInetAddress(),
+                SocketConnection.getPort()));
 
-        DatagramPacket datagramPacket = new DatagramPacket(dataBuffer, dataBuffer.length);
+        DatagramPacket datagramPacket = new DatagramPacket(
+                dataBuffer,
+                dataBuffer.length);
         datagramSocket.receive(datagramPacket);
         Response response = SerializationUtils.deserialize(dataBuffer);
         if (response.getExists()) {
@@ -49,7 +56,7 @@ public class LandingController {
         }
     }
 
-    public void registerPage() throws IOException {
+    public void goRegister() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(AddSong.class.getResource("Register.fxml"));
         Stage stage = (Stage) registerButton.getScene().getWindow();
         stage.setScene(new Scene(fxmlLoader.load()));

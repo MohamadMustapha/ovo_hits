@@ -9,8 +9,6 @@ public class SocketConnection {
     private static DatagramSocket serverDatagramSocket = null;
     private static InetAddress inetAddress = null;
 
-    private static final int port = 6969;
-
     public static DatagramSocket getDatagramSocket() {
         if (datagramSocket != null) return datagramSocket;
         try { datagramSocket = new DatagramSocket(); }
@@ -30,5 +28,5 @@ public class SocketConnection {
         return inetAddress = InetAddress.getLocalHost();
     }
 
-    public static int getPort() { return port; }
+    public static Integer getPort() { return 6969; }
 }

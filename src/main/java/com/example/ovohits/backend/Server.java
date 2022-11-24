@@ -7,10 +7,11 @@ import java.util.Scanner;
 
 public class Server {
     private static final Scanner scan = new Scanner(System.in);
+    public static Integer port = null;
 
     @SuppressWarnings("InfiniteLoopStatement")
     public static void main(String[] args) throws Exception {
-        int port = scan.nextInt();
+        port = scan.nextInt();
         DatagramSocket datagramSocket = SocketConnection.getServerDatagramSocket(port);
         System.out.println("Server running at Port: " + port);
 

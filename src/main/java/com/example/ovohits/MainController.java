@@ -1,6 +1,5 @@
 package com.example.ovohits;
 
-import com.example.ovohits.backend.Response;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -8,11 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
-import org.apache.commons.lang3.SerializationUtils;
-
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 
 public class MainController {
     @FXML
@@ -24,16 +19,20 @@ public class MainController {
     @FXML
     private ListView<String> songsView;
 
-    private Response sendRequest(Request request) throws IOException {
-        byte[] dataBuffer = SerializationUtils.serialize(request);
-        DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
-        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length,
-                SocketConnection.getInetAddress(), SocketConnection.getPort()));
-
-        DatagramPacket datagramPacket = new DatagramPacket(dataBuffer, dataBuffer.length);
-        datagramSocket.receive(datagramPacket);
-        return SerializationUtils.deserialize(dataBuffer);
-    }
+//    private Response sendRequest(Request request) throws IOException {
+//        byte[] dataBuffer = SerializationUtils.serialize(request);
+//        SocketConnection.getDatagramSocket().send(new DatagramPacket(
+//                dataBuffer,
+//                dataBuffer.length,
+//                SocketConnection.getInetAddress(),
+//                SocketConnection.getPort()));
+//
+//        DatagramPacket datagramPacket = new DatagramPacket(
+//                dataBuffer,
+//                dataBuffer.length);
+//        SocketConnection.getDatagramSocket().receive(datagramPacket);
+//        return SerializationUtils.deserialize(dataBuffer);
+//    }
 
     public void addToMyPlaylist() { myPlaylistView.getItems().add(songsView.getSelectionModel().getSelectedItem()); }
 
@@ -44,20 +43,14 @@ public class MainController {
         Client.setSessionId(null);
     }
 
-
 //    public void initialize() throws IOException {
-//        Request request = new Request("@getSongs");
-//        System.out.println(Client.getSessionId());
-//        request.setModelId(Client.getSessionId());
-//        Response response = sendRequest(request);
+//        Response response = sendRequest(new Request("@getSongs"));
 //        ArrayList<Song> songArrayList = new ArrayList<>(response.getSongDataArrayList().stream()
 //                .map(bytes -> (Song) SerializationUtils.deserialize(bytes)).toList());
-//        System.out.println(songArrayList);
 //        for (Song song : songArrayList) {
-//            response = sendRequest(new Request("@getUser"));
+//            response = sendRequest(new Request(song.getUser_id(), "@getUser"));
 //            User user = SerializationUtils.deserialize(response.getUserData());
-//            songsView.getItems().add(song.getName() + " from: " + user.getUsername() + " id: " +
-//                    song.getId());
+//            songsView.getItems().add(song.getName() + " from: " + user.getUsername() + " id: " + song.getId());
 //        }
 //    }
 

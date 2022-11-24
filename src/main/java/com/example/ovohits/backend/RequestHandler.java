@@ -11,13 +11,11 @@ import org.apache.commons.lang3.SerializationUtils;
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.SocketAddress;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class RequestHandler extends Thread {
-    private final DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
     private final Request request;
     private final SocketAddress socketAddress;
 
@@ -90,15 +88,21 @@ public class RequestHandler extends Thread {
         Response response = new Response(song != null);
         response.setSongData(SerializationUtils.serialize(song));
         byte[] dataBuffer = SerializationUtils.serialize(response);
-        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, socketAddress));
+        SocketConnection.getDatagramSocket().send(new DatagramPacket(
+                dataBuffer,
+                dataBuffer.length,
+                socketAddress));
     }
 
     public void getSongs() throws IOException, SQLException {
-        ArrayList<byte[]> songDataArrayList = new ArrayList<>(new SongService().getSongsById(request.getModelId())
+        ArrayList<byte[]> songDataArrayList = new ArrayList<>(new SongService().getSongs()
                 .stream().map(SerializationUtils::serialize).toList());
         Response response = new Response(songDataArrayList);
         byte[] dataBuffer = SerializationUtils.serialize(response);
-        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, socketAddress));
+        SocketConnection.getDatagramSocket().send(new DatagramPacket(
+                dataBuffer,
+                dataBuffer.length,
+                socketAddress));
     }
 
     public void getUser() throws IOException, SQLException {
@@ -106,7 +110,10 @@ public class RequestHandler extends Thread {
         Response response = new Response(user != null);
         response.setUserData(SerializationUtils.serialize(user));
         byte[] dataBuffer = SerializationUtils.serialize(response);
-        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, socketAddress));
+        SocketConnection.getDatagramSocket().send(new DatagramPacket(
+                dataBuffer,
+                dataBuffer.length,
+                socketAddress));
     }
 
     public void login() throws IOException, SQLException {
@@ -115,7 +122,10 @@ public class RequestHandler extends Thread {
         Response response = new Response(user != null && user.getPassword().equals(loginArray.get(1)));
         response.setUserId(user != null ? user.getId() : -1);
         byte[] dataBuffer = SerializationUtils.serialize(response);
-        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, socketAddress));
+        SocketConnection.getDatagramSocket().send(new DatagramPacket(
+                dataBuffer,
+                dataBuffer.length,
+                socketAddress));
     }
 
     public void playSong() {
