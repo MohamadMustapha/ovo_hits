@@ -20,11 +20,13 @@ public class SocketConnection {
         if (serverDatagramSocket != null) return serverDatagramSocket;
         try { serverDatagramSocket = new DatagramSocket(port); }
         catch (Exception e) { e.printStackTrace(); }
-        return  serverDatagramSocket;
+        return serverDatagramSocket;
     }
 
     public static InetAddress getInetAddress() throws UnknownHostException {
         if (inetAddress != null) return inetAddress;
-        return inetAddress = InetAddress.getByName("10.169.34.174");
+        return inetAddress = InetAddress.getLocalHost();
     }
+
+    public static Integer getPort() { return 6969; }
 }

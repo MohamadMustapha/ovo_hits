@@ -1,4 +1,4 @@
-package com.example.ovohits.database;
+package com.example.ovohits.backend.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,12 +9,12 @@ public class DatabaseConnection {
 
     public static Connection getConnection() {
         if (connection != null) return connection;
-        String url = "jdbc:mysql://localhost/OVO_Hits",
-               adminUsername = "root",
-               adminPassword = "1234";
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection(url, adminUsername, adminPassword);
+            connection = DriverManager.getConnection(
+                    "jdbc:mysql://localhost/OVO_Hits",
+                    "root",
+                    "pass-123");
         }
         catch (ClassNotFoundException | SQLException e) { throw new RuntimeException(e); }
         return connection;

@@ -1,4 +1,4 @@
-package com.example.ovohits.database.models;
+package com.example.ovohits.backend.database.models;
 
 import java.io.Serializable;
 
