@@ -42,16 +42,14 @@ public class AddSongController {
 //                        Client.getSessionId()
                 )));
         Request request = new Request(addSongArray, new SerialBlob(songData));
-
         byte[] dataBuffer = SerializationUtils.serialize(request);
         DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
-        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length,
-                SocketConnection.getInetAddress(), SocketConnection.getPort()));
         List<List<Byte>> dataBuffers = Lists.partition(
                 new ArrayList<>(Bytes.asList(dataBuffer)), 64000);
         for (List<Byte> dataBufferList : dataBuffers) {
             dataBuffer = ArrayUtils.toPrimitive(dataBufferList.toArray(new Byte[0]));
-
+            datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length,
+                    SocketConnection.getInetAddress(), SocketConnection.getPort()));
         }
     }
 

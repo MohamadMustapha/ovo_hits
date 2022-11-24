@@ -57,13 +57,11 @@ public class RegisterController {
 
         ArrayList<String> addUserArray = (ArrayList<String>) Arrays.asList(emailInput.getText(),
                 firstNameInput.getText(), lastNameInput.getText(), passwordInput.getText(), usernameInput.getText());
-
         FileInputStream fileInputStream = new FileInputStream(songFile);
         byte[] songData = new byte[(int) songFile.length()];
         if (fileInputStream.read(songData) == -1) throw new IOException();
         fileInputStream.close();
         ArrayList<String> addSongArray = (ArrayList<String>) Arrays.asList(songNameInput.getText(), null);
-
         Request request = new Request(addUserArray, addSongArray, new SerialBlob(songData));
 
         byte[] dataBuffer = SerializationUtils.serialize(request);
@@ -77,7 +75,6 @@ public class RegisterController {
         Stage stage = (Stage) returnButton.getScene().getWindow();
         stage.setScene(new Scene(fxmlLoader.load()));
     }
-
     public void uploadSong() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("MP3 Files", "*.mp3"));
@@ -90,4 +87,5 @@ public class RegisterController {
                 listView.getItems().set(0, songFile.getName());
         }
     }
+
 }

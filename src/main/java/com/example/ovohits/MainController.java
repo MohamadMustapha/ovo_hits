@@ -1,8 +1,6 @@
 package com.example.ovohits;
 
 import com.example.ovohits.backend.Response;
-import com.example.ovohits.backend.database.models.Song;
-import com.example.ovohits.backend.database.models.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -15,7 +13,6 @@ import org.apache.commons.lang3.SerializationUtils;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.util.ArrayList;
 
 public class MainController {
     @FXML
@@ -31,7 +28,7 @@ public class MainController {
         byte[] dataBuffer = SerializationUtils.serialize(request);
         DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
         datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length,
-                SocketConnection.getInetAddress(), 6969));
+                SocketConnection.getInetAddress(), SocketConnection.getPort()));
 
         DatagramPacket datagramPacket = new DatagramPacket(dataBuffer, dataBuffer.length);
         datagramSocket.receive(datagramPacket);
@@ -47,19 +44,22 @@ public class MainController {
         Client.setSessionId(null);
     }
 
-    public void initialize() throws IOException {
-        Request request = new Request("@getSongs");
-        request.setModelId(Client.getSessionId());
-        Response response = sendRequest(request);
-        ArrayList<Song> songArrayList = new ArrayList<>(response.getSongDataArrayList().stream()
-                .map(bytes -> (Song) SerializationUtils.deserialize(bytes)).toList());
-        for (Song song : songArrayList) {
-            response = sendRequest(new Request("@getUser"));
-            User user = SerializationUtils.deserialize(response.getUserData());
-            songsView.getItems().add(song.getName() + " from: " + user.getUsername() + " id: " +
-                    song.getId());
-        }
-    }
+
+//    public void initialize() throws IOException {
+//        Request request = new Request("@getSongs");
+//        System.out.println(Client.getSessionId());
+//        request.setModelId(Client.getSessionId());
+//        Response response = sendRequest(request);
+//        ArrayList<Song> songArrayList = new ArrayList<>(response.getSongDataArrayList().stream()
+//                .map(bytes -> (Song) SerializationUtils.deserialize(bytes)).toList());
+//        System.out.println(songArrayList);
+//        for (Song song : songArrayList) {
+//            response = sendRequest(new Request("@getUser"));
+//            User user = SerializationUtils.deserialize(response.getUserData());
+//            songsView.getItems().add(song.getName() + " from: " + user.getUsername() + " id: " +
+//                    song.getId());
+//        }
+//    }
 
     public void playSong() {
         // TODO: Send partial audio packets to backend and download/stream the file (ex: YouTube)

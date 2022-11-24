@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.SerializationUtils;
 
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.util.ArrayList;
@@ -18,6 +19,8 @@ import java.util.Arrays;
 public class LandingController {
     @FXML
     private Button loginButton;
+    @FXML
+    private Button registerButton;
     @FXML
     private PasswordField passwordField;
     @FXML
@@ -29,13 +32,11 @@ public class LandingController {
 
         ArrayList<String> loginArray = new ArrayList<>(Arrays.asList(usernameField.getText(),
                 passwordField.getText()));
-
         Request request = new Request(loginArray);
-
         byte[] dataBuffer = SerializationUtils.serialize(request);
         DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
         datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length,
-                SocketConnection.getInetAddress(), 6969));
+                SocketConnection.getInetAddress(), SocketConnection.getPort()));
 
         DatagramPacket datagramPacket = new DatagramPacket(dataBuffer, dataBuffer.length);
         datagramSocket.receive(datagramPacket);
@@ -46,5 +47,12 @@ public class LandingController {
             Stage stage = (Stage) loginButton.getScene().getWindow();
             stage.setScene(new Scene(fxmlLoader.load()));
         }
+    }
+
+    public void registerPage() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(AddSong.class.getResource("Register.fxml"));
+        Stage stage = (Stage) registerButton.getScene().getWindow();
+        stage.setScene(new Scene(fxmlLoader.load()));
+        Client.setSessionId(null);
     }
 }
