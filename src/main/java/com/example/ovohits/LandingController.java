@@ -1,5 +1,6 @@
 package com.example.ovohits;
 
+import com.example.ovohits.backend.Response;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

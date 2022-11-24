@@ -1,4 +1,6 @@
-package com.example.ovohits;
+package com.example.ovohits.backend;
+
+import com.example.ovohits.SocketConnection;
 
 import java.net.*;
 import java.util.Scanner;
@@ -6,6 +8,7 @@ import java.util.Scanner;
 public class Server {
     private static final Scanner scan = new Scanner(System.in);
 
+    @SuppressWarnings("InfiniteLoopStatement")
     public static void main(String[] args) throws Exception {
         int port = scan.nextInt();
         DatagramSocket datagramSocket = SocketConnection.getServerDatagramSocket(port);

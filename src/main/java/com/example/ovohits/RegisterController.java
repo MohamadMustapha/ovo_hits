@@ -52,7 +52,7 @@ public class RegisterController {
         if (passwordInput.getText().isBlank()) return;
         if (emailInput.getText().isBlank() || !verifyEmail()) return;
 
-        if (songFile.exists()) return;
+        if (!songFile.exists()) return;
         if (listView.getItems().isEmpty()) return;
 
         ArrayList<String> addUserArray = (ArrayList<String>) Arrays.asList(emailInput.getText(),

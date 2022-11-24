@@ -1,6 +1,6 @@
-package com.example.ovohits.database.repositories;
+package com.example.ovohits.backend.database.repositories;
 
-import com.example.ovohits.database.models.User;
+import com.example.ovohits.backend.database.models.User;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

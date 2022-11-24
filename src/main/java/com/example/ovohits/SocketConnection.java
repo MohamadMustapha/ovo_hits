@@ -9,6 +9,8 @@ public class SocketConnection {
     private static DatagramSocket serverDatagramSocket = null;
     private static InetAddress inetAddress = null;
 
+    private static final int port = 6969;
+
     public static DatagramSocket getDatagramSocket() {
         if (datagramSocket != null) return datagramSocket;
         try { datagramSocket = new DatagramSocket(); }
@@ -20,11 +22,13 @@ public class SocketConnection {
         if (serverDatagramSocket != null) return serverDatagramSocket;
         try { serverDatagramSocket = new DatagramSocket(port); }
         catch (Exception e) { e.printStackTrace(); }
-        return  serverDatagramSocket;
+        return serverDatagramSocket;
     }
 
     public static InetAddress getInetAddress() throws UnknownHostException {
         if (inetAddress != null) return inetAddress;
         return inetAddress = InetAddress.getLocalHost();
     }
+
+    public static int getPort() { return port; }
 }

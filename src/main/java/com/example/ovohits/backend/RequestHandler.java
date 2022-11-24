@@ -1,9 +1,11 @@
-package com.example.ovohits;
+package com.example.ovohits.backend;
 
-import com.example.ovohits.database.models.Song;
-import com.example.ovohits.database.models.User;
-import com.example.ovohits.database.services.SongService;
-import com.example.ovohits.database.services.UserService;
+import com.example.ovohits.Request;
+import com.example.ovohits.SocketConnection;
+import com.example.ovohits.backend.database.models.Song;
+import com.example.ovohits.backend.database.models.User;
+import com.example.ovohits.backend.database.services.SongService;
+import com.example.ovohits.backend.database.services.UserService;
 import org.apache.commons.lang3.SerializationUtils;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -92,9 +94,9 @@ public class RequestHandler extends Thread {
     }
 
     public void getSongs() throws IOException, SQLException {
-        ArrayList<byte[]> songDataList = new ArrayList<>(new SongService().getSongsById(request.getModelId())
+        ArrayList<byte[]> songDataArrayList = new ArrayList<>(new SongService().getSongsById(request.getModelId())
                 .stream().map(SerializationUtils::serialize).toList());
-        Response response = new Response(songDataList);
+        Response response = new Response(songDataArrayList);
         byte[] dataBuffer = SerializationUtils.serialize(response);
         datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length, socketAddress));
     }

@@ -1,8 +1,8 @@
-package com.example.ovohits.database.services;
+package com.example.ovohits.backend.database.services;
 
-import com.example.ovohits.database.DatabaseConnection;
-import com.example.ovohits.database.models.Song;
-import com.example.ovohits.database.repositories.SongRepository;
+import com.example.ovohits.backend.database.DatabaseConnection;
+import com.example.ovohits.backend.database.models.Song;
+import com.example.ovohits.backend.database.repositories.SongRepository;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.sql.*;

@@ -1,8 +1,7 @@
-package com.example.ovohits.database.models;
+package com.example.ovohits.backend.database.models;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.Serializable;
-import java.sql.Blob;
 
 public class Song implements Serializable {
     private int id;

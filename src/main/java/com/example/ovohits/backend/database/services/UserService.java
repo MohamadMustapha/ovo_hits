@@ -1,8 +1,8 @@
-package com.example.ovohits.database.services;
+package com.example.ovohits.backend.database.services;
 
-import com.example.ovohits.database.DatabaseConnection;
-import com.example.ovohits.database.models.User;
-import com.example.ovohits.database.repositories.UserRepository;
+import com.example.ovohits.backend.database.DatabaseConnection;
+import com.example.ovohits.backend.database.models.User;
+import com.example.ovohits.backend.database.repositories.UserRepository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -1,4 +1,4 @@
-package com.example.ovohits.database;
+package com.example.ovohits.backend.database;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
