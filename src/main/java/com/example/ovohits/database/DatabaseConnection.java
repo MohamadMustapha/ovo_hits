@@ -11,7 +11,7 @@ public class DatabaseConnection {
         if (connection != null) return connection;
         String url = "jdbc:mysql://localhost/OVO_Hits",
                adminUsername = "root",
-               adminPassword = "pass-123";
+               adminPassword = "1234";
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(url, adminUsername, adminPassword);

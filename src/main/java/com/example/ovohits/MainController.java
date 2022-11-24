@@ -47,6 +47,7 @@ public class MainController {
         Client.setSessionId(null);
     }
 
+
 //    public void initialize() throws IOException {
 //        Request request = new Request("@getSongs");
 //        System.out.println(Client.getSessionId());
