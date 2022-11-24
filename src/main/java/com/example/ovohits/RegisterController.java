@@ -39,6 +39,8 @@ public class RegisterController {
     @FXML
     private TextField usernameInput;
 
+
+
     private boolean verifyEmail() {
         Pattern pattern = Pattern.compile(
                 "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
@@ -77,7 +79,6 @@ public class RegisterController {
         Stage stage = (Stage) returnButton.getScene().getWindow();
         stage.setScene(new Scene(fxmlLoader.load()));
     }
-
     public void uploadSong() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("MP3 Files", "*.mp3"));
@@ -90,4 +91,5 @@ public class RegisterController {
                 listView.getItems().set(0, songFile.getName());
         }
     }
+
 }
