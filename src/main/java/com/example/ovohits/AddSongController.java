@@ -1,5 +1,7 @@
 package com.example.ovohits;
 
+import com.google.common.collect.Lists;
+import com.google.common.primitives.Bytes;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -8,6 +10,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.SerializationUtils;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -15,8 +18,7 @@ import java.io.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 
 public class AddSongController {
     private File songFile = null;
@@ -28,21 +30,34 @@ public class AddSongController {
     private TextField songNameInput;
 
     public void addSong() throws IOException, SQLException {
-        if (songFile.exists()) return;
+        if (!songFile.exists()) return;
         if (listView.getItems().isEmpty()) return;
 
         byte[] songData = new byte[(int) songFile.length()];
         FileInputStream fileInputStream = new FileInputStream(songFile);
         if (fileInputStream.read(songData) == -1) throw new RuntimeException();
         fileInputStream.close();
-        ArrayList<String> addSongArray = new ArrayList<>(Arrays.asList(songNameInput.getText(),
+
+        ArrayList<String> addSongArray = new ArrayList<>(Arrays.asList(
+                songNameInput.getText(),
                 Integer.toString(Client.getSessionId())));
-        Request request = new Request(addSongArray, new SerialBlob(songData));
+        Request request = new Request(
+                addSongArray,
+                new SerialBlob(songData));
 
         byte[] dataBuffer = SerializationUtils.serialize(request);
         DatagramSocket datagramSocket = SocketConnection.getDatagramSocket();
-        datagramSocket.send(new DatagramPacket(dataBuffer, dataBuffer.length,
-                SocketConnection.getInetAddress(), 6969));
+        List<List<Byte>> dataBuffers = Lists.partition(
+                new ArrayList<>(Bytes.asList(dataBuffer)),
+                64000);
+        for (List<Byte> dataBufferList : dataBuffers) {
+            dataBuffer = ArrayUtils.toPrimitive(dataBufferList.toArray(new Byte[0]));
+            datagramSocket.send(new DatagramPacket(
+                    dataBuffer,
+                    dataBuffer.length,
+                    SocketConnection.getInetAddress(),
+                    SocketConnection.getPort()));
+        }
     }
 
     public void goBack() throws IOException {

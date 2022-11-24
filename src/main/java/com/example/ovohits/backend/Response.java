@@ -1,4 +1,4 @@
-package com.example.ovohits;
+package com.example.ovohits.backend;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
-package com.example.ovohits.database.repositories;
+package com.example.ovohits.backend.database.repositories;
 
-import com.example.ovohits.database.models.Song;
+import com.example.ovohits.backend.database.models.Song;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -15,6 +15,4 @@ public interface SongRepository {
     Song getSong(int id) throws Exception;
 
     ArrayList<Song> getSongs() throws SQLException;
-
-    ArrayList<Song> getSongsById(int id) throws SQLException;
 }
