@@ -5,51 +5,55 @@ import java.sql.Blob;
 import java.util.ArrayList;
 
 public class Request implements Serializable {
-    private ArrayList<String> addSongArray;
-    private ArrayList<String> addUserArray;
-    private ArrayList<String> loginArray;
+    private ArrayList<String> loginInfo;
+    private ArrayList<Integer> savedSongInfo;
+    private ArrayList<String> songInfo;
+    private ArrayList<String> userInfo;
     private Blob songData;
     private int modelId;
-    private String functionCall;
+    private String function;
 
     public Request() { }
 
-    public Request(ArrayList<String> addSongArray, ArrayList<String> addUserArray, Blob songData) {
-        this.addSongArray = addSongArray;
-        this.addUserArray = addUserArray;
+    public Request(ArrayList<String> loginInfo) {
+        this.loginInfo = loginInfo;
+        this.function = "@login";
+    }
+
+    public Request(ArrayList<String> songInfo, Blob songData) {
+        this.songInfo = songInfo;
         this.songData = songData;
-        this.functionCall = "@addUser";
+        this.function = "@addSong";
     }
-
-    public Request(ArrayList<String> addSongArray, Blob songData) {
-        this.addSongArray = addSongArray;
+    public Request(ArrayList<String> songInfo, ArrayList<String> userInfo, Blob songData) {
+        this.songInfo = songInfo;
+        this.userInfo = userInfo;
         this.songData = songData;
-        this.functionCall = "@addSong";
+        this.function = "@addUser";
     }
 
-    public Request(ArrayList<String> loginArray) {
-        this.loginArray = loginArray;
-        this.functionCall = "@login";
-    }
-
-    public Request(int modelId, String functionCall) {
+    public Request(int modelId, String function) {
         this.modelId = modelId;
-        this.functionCall = functionCall;
+        this.function = function;
     }
 
-    public Request(String functionCall) { this.functionCall = functionCall; }
+    public Request(String function) { this.function = function; }
 
-    public ArrayList<String> getAddSongArray() { return addSongArray; }
+    public ArrayList<String> getLoginInfo() { return loginInfo; }
 
-    public void setAddSongArray(ArrayList<String> addSongArray) { this.addSongArray = addSongArray; }
+    public void setLoginInfo(ArrayList<String> loginInfo) { this.loginInfo = loginInfo; }
 
-    public ArrayList<String> getAddUserArray() { return addUserArray; }
+    public ArrayList<Integer> getSavedSongInfo() { return savedSongInfo; }
 
-    public void setAddUserArray(ArrayList<String> addUserArray) { this.addUserArray = addUserArray; }
+    public void setSavedSongInfo(ArrayList<Integer> savedSongInfo) { this.savedSongInfo = savedSongInfo; }
 
-    public ArrayList<String> getLoginArray() { return loginArray; }
+    public ArrayList<String> getSongInfo() { return songInfo; }
 
-    public void setLoginArray(ArrayList<String> loginArray) { this.loginArray = loginArray; }
+    public void setSongInfo(ArrayList<String> songInfo) { this.songInfo = songInfo; }
+
+    public ArrayList<String> getUserInfo() { return userInfo; }
+
+    public void setUserInfo(ArrayList<String> userInfo) { this.userInfo = userInfo; }
 
     public Blob getSongData() { return songData; }
 
@@ -59,18 +63,19 @@ public class Request implements Serializable {
 
     public void setModelId(int modelId) { this.modelId = modelId; }
 
-    public String getFunctionCall() { return functionCall; }
+    public String getFunction() { return function; }
 
-    public void setFunctionCall(String functionCall) { this.functionCall = functionCall; }
+    public void setFunction(String function) { this.function = function; }
 
     @Override
     public String toString() {
         return "Request [" +
-                "addSongArray=" + addSongArray.toString() + ", " +
-                "addUserArray=" + addUserArray.toString() + ", " +
-                "loginArray=" + loginArray.toString() + ", " +
+                "loginInfo=" + loginInfo.toString() + ", " +
+                "savedSongInfo=" + savedSongInfo.toString() + ", " +
+                "songInfo=" + songInfo.toString() + ", " +
+                "userInfo=" + userInfo.toString() + ", " +
                 "songData=" + songData + ", " +
                 "modelId=" + modelId + ", " +
-                "functionCall" + functionCall + "]";
+                "function" + function + "]";
     }
 }

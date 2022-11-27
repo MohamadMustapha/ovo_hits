@@ -1,7 +1,5 @@
 package com.example.ovohits.backend;
 
-import com.example.ovohits.SocketConnection;
-
 import java.net.*;
 import java.util.Scanner;
 
@@ -11,15 +9,21 @@ public class Server {
 
     @SuppressWarnings("InfiniteLoopStatement")
     public static void main(String[] args) throws Exception {
+        System.out.print("\033[1;37m" + "Please enter a port number:" + "\033[0m ");
         port = scan.nextInt();
-        DatagramSocket datagramSocket = SocketConnection.getServerDatagramSocket(port);
-        System.out.println("Server running at Port: " + port);
+        DatagramSocket datagramSocket = ServerSocketConnection.getDatagramSocket(port);
+        System.out.println("\033[1;32m" + "[Success]: Server running on port: " + "\033[1;35m" + port + "\033[0m");
 
         while (true) {
-            byte[] bufferData = new byte[16777215];
-            DatagramPacket receiver = new DatagramPacket(bufferData, bufferData.length);
+            byte[] dataBuffer = new byte[64000];
+            DatagramPacket receiver = new DatagramPacket(
+                    dataBuffer,
+                    dataBuffer.length);
             datagramSocket.receive(receiver);
-            Thread requestHandler = new RequestHandler(bufferData, receiver.getSocketAddress());
+
+            Thread requestHandler = new ClientHandler(
+                    ++port,
+                    receiver.getSocketAddress());
             requestHandler.start();
         }
     }

@@ -14,13 +14,13 @@ public class SongService implements SongRepository {
     private void prepareQuery(PreparedStatement preparedStatement, Song song) throws SQLException {
         preparedStatement.setBlob(1, song.getData());
         preparedStatement.setString(2, song.getName());
-        preparedStatement.setInt(3, song.getUser_id());
+        preparedStatement.setInt(3, song.getUserId());
     }
 
     private ArrayList<Song> getSongList(PreparedStatement preparedStatement) throws SQLException {
         ResultSet resultSet = preparedStatement.executeQuery();
 
-        ArrayList<Song> songArrayList = new ArrayList<>();
+        ArrayList<Song> songList = new ArrayList<>();
         while (resultSet.next()) {
             Song song = new Song(
                     new SerialBlob(resultSet.getBlob("data_")),
@@ -28,10 +28,9 @@ public class SongService implements SongRepository {
                     resultSet.getInt("user_id")
             );
             song.setId(resultSet.getInt("id"));
-            songArrayList.add(song);
+            songList.add(song);
         }
-
-        return songArrayList;
+        return songList;
     }
 
     @Override
@@ -68,19 +67,17 @@ public class SongService implements SongRepository {
         String query = "SELECT * FROM SONG WHERE id=?";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
         preparedStatement.setInt(1, id);
-
-        Song song = new Song();
         ResultSet resultSet = preparedStatement.executeQuery();
 
+        Song song = new Song();
         boolean found = false;
         while (resultSet.next()) {
             found = true;
             song.setId(resultSet.getInt("id"));
             song.setData(new SerialBlob(resultSet.getBlob("data_")));
             song.setName(resultSet.getString("name_"));
-            song.setUser_id(resultSet.getInt("user_id"));
+            song.setUserId(resultSet.getInt("user_id"));
         }
-
         return found ? song : null;
     }
 

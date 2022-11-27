@@ -14,9 +14,9 @@ public class UserService implements UserRepository {
     private static final Connection connection = DatabaseConnection.getConnection();
 
     private User getUserData(PreparedStatement preparedStatement) throws SQLException {
-        User user = new User();
         ResultSet resultSet = preparedStatement.executeQuery();
 
+        User user = new User();
         boolean found = false;
         while (resultSet.next()) {
             found = true;
@@ -27,7 +27,6 @@ public class UserService implements UserRepository {
             user.setPassword(resultSet.getString("password_"));
             user.setUsername(resultSet.getString("username"));
         }
-
         return found ? user : null;
     }
 
@@ -102,7 +101,6 @@ public class UserService implements UserRepository {
             user.setId(resultSet.getInt("id"));
             userList.add(user);
         }
-
         return userList;
     }
 }

@@ -7,14 +7,14 @@ public class Song implements Serializable {
     private int id;
     private SerialBlob data;
     private String name;
-    private int user_id;
+    private int userId;
 
     public Song() { }
 
-    public Song(SerialBlob data, String name, int user_id) {
+    public Song(SerialBlob data, String name, int userId) {
         this.data = data;
         this.name = name;
-        this.user_id = user_id;
+        this.userId = userId;
     }
 
     public int getId() { return id; }
@@ -29,9 +29,9 @@ public class Song implements Serializable {
 
     public void setName(String name) { this.name = name; }
 
-    public int getUser_id() { return user_id; }
+    public int getUserId() { return userId; }
 
-    public void setUser_id(int user_id) { this.user_id = user_id; }
+    public void setUserId(int userId) { this.userId = userId; }
 
     @Override
     public String toString() {
@@ -39,6 +39,6 @@ public class Song implements Serializable {
                 "id=" + id + ", " +
                 "data=" + data + ", " +
                 "name=" + name + ", " +
-                "user_id=" + user_id + "]";
+                "userId=" + userId + "]";
     }
 }
