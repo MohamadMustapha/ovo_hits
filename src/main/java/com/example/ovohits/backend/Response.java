@@ -5,27 +5,40 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Response implements Serializable {
-    private ArrayList<byte[]> songDataArrayList;
+    private ArrayList<byte[]> savedSongDataList;
+    private ArrayList<byte[]> songDataList;
     private boolean exists;
+    private boolean functionCalled = true;
     private byte[] songData;
     private byte[] userData;
+    private int port;
     private int userId;
 
     public Response() { }
 
-    public Response(ArrayList<byte[]> songDataArrayList) { this.songDataArrayList = songDataArrayList; }
+    public Response(ArrayList<byte[]> songDataList) { this.songDataList = songDataList; }
 
     public Response(boolean exists) { this.exists = exists; }
 
-    public boolean getExists() { return exists; }
+    public Response(int port) { this.port = port; }
+
+    public ArrayList<byte[]> getSavedSongDataList() { return savedSongDataList; }
+
+    public void setSavedSongDataList(ArrayList<byte[]> savedSongDataList) {
+        this.savedSongDataList = savedSongDataList;
+    }
+
+    public ArrayList<byte[]> getSongDataList() { return songDataList; }
+
+    public void setSongDataList(ArrayList<byte[]> songDataList) { this.songDataList = songDataList; }
+
+    public boolean isExists() { return exists; }
 
     public void setExists(boolean exists) { this.exists = exists; }
 
-    public ArrayList<byte[]> getSongDataArrayList() { return songDataArrayList; }
+    public boolean isFunctionCalled() { return functionCalled; }
 
-    public void setSongDataArrayList(ArrayList<byte[]> songDataArrayList) {
-        this.songDataArrayList = songDataArrayList;
-    }
+    public void setFunctionCalled(boolean functionCalled) { this.functionCalled = functionCalled; }
 
     public byte[] getSongData() { return songData; }
 
@@ -35,6 +48,10 @@ public class Response implements Serializable {
 
     public void setUserData(byte[] userData) { this.userData = userData; }
 
+    public int getPort() { return port; }
+
+    public void setPort(int port) { this.port = port; }
+
     public int getUserId() { return userId; }
 
     public void setUserId(int userId) { this.userId = userId; }
@@ -42,10 +59,13 @@ public class Response implements Serializable {
     @Override
     public String toString() {
         return "Request [" +
-                "songArrayList=" + songDataArrayList.toString() + ", " +
+                "savedSongDataList=" + savedSongDataList.toString() + ", " +
+                "songDataList=" + songDataList.toString() + ", " +
                 "exists=" + exists + ", " +
-                "song=" + Arrays.toString(songData) + ", " +
-                "user=" + Arrays.toString(userData) +
+                "functionCalled=" + functionCalled + ", " +
+                "songData=" + Arrays.toString(songData) + ", " +
+                "userData=" + Arrays.toString(userData) +
+                "port=" + port + ", " +
                 "userId=" + userId + "]";
     }
 }

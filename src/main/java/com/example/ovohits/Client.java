@@ -1,9 +1,16 @@
 package com.example.ovohits;
 
-public class Client {
-    private static Integer sessionId = null;
+import java.io.Serializable;
 
-    public static Integer getSessionId() { return sessionId; }
+public class Client implements Serializable {
+    private static boolean threadAlive = false;
+    private static Integer clientId = null;
 
-    public static void setSessionId(Integer sessionId) { Client.sessionId = sessionId; }
+    public static boolean isThreadAlive() { return threadAlive; }
+
+    public static void setThreadAlive(boolean threadAlive) { Client.threadAlive = threadAlive; }
+
+    public static Integer getClientId() { return clientId; }
+
+    public static void setClientId(Integer clientId) { Client.clientId = clientId; }
 }

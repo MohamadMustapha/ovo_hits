@@ -1,5 +1,6 @@
 package com.example.ovohits;
 
+import com.example.ovohits.backend.Response;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -13,7 +14,6 @@ import org.apache.commons.lang3.SerializationUtils;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.*;
-import java.net.DatagramPacket;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,30 +59,34 @@ public class RegisterController {
         if (fileInputStream.read(songData) == -1) throw new IOException();
         fileInputStream.close();
 
-        ArrayList<String> addUserArray = new ArrayList<>(Arrays.asList(
+        ArrayList<String> songInfo = new ArrayList<>(Arrays.asList(
+                songNameInput.getText(),
+                null));
+        ArrayList<String> userInfo = new ArrayList<>(Arrays.asList(
                 emailInput.getText(),
                 firstNameInput.getText(),
                 lastNameInput.getText(),
                 passwordInput.getText(),
                 usernameInput.getText()));
-        ArrayList<String> addSongArray = new ArrayList<>(Arrays.asList(
-                songNameInput.getText(),
-                null));
-        Request request = new Request(
-                addUserArray,
-                addSongArray,
-                new SerialBlob(songData));
-
-        byte[] dataBuffer = SerializationUtils.serialize(request);
-        SocketConnection.getDatagramSocket().send(new DatagramPacket(
-                dataBuffer,
-                dataBuffer.length,
-                SocketConnection.getInetAddress(),
-                SocketConnection.getPort()));
+        SocketConnection.sendByteFragments(SerializationUtils.serialize(new Request(
+                songInfo,
+                userInfo,
+                new SerialBlob(songData))));
+        Response response = SerializationUtils.deserialize(SocketConnection.getByteFragments());
+        if (response.isFunctionCalled()) {
+            Client.setClientId(response.getUserId());
+            goMain();
+        }
     }
 
-    public void goBack() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(AddSong.class.getResource("Landing.fxml"));
+    public void goLanding() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(Landing.class.getResource("Landing.fxml"));
+        Stage stage = (Stage) returnButton.getScene().getWindow();
+        stage.setScene(new Scene(fxmlLoader.load()));
+    }
+
+    public void goMain() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Main.fxml"));
         Stage stage = (Stage) returnButton.getScene().getWindow();
         stage.setScene(new Scene(fxmlLoader.load()));
     }
@@ -98,5 +102,4 @@ public class RegisterController {
                 listView.getItems().set(0, songFile.getName());
         }
     }
-
 }

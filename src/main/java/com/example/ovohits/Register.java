@@ -15,6 +15,7 @@ public class Register extends Application {
         stage.setTitle("OVO Hits");
         stage.setScene(scene);
         stage.show();
+        stage.setOnCloseRequest(event -> new LandingController().exit());
     }
 
     public static void main(String[] args) { launch(); }

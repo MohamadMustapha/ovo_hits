@@ -10,7 +10,7 @@
          <Button layoutX="160.0" layoutY="14.0" mnemonicParsing="false" onAction="#playSong" style="-fx-background-color: black;" text="Play" textFill="WHITE" />
          <Button layoutX="274.0" layoutY="14.0" mnemonicParsing="false" style="-fx-background-color: black;" text="Pause" textFill="WHITE" />
          <Button layoutX="386.0" layoutY="14.0" mnemonicParsing="false" style="-fx-background-color: black;" text="Reset" textFill="WHITE" />
-         <Button fx:id="returnButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#goBack" style="-fx-background-color: black;" text="Return" textFill="WHITE" />
+         <Button fx:id="returnButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#logout" style="-fx-background-color: black;" text="Return" textFill="WHITE" />
       </AnchorPane>
    </bottom>
    <top>
@@ -27,8 +27,9 @@
                <Font size="32.0" />
             </font>
          </Label>
-         <Button layoutX="90.0" layoutY="295.0" mnemonicParsing="false" onAction="#addToMyPlaylist" style="-fx-background-color: black;" text="Add" textFill="WHITE" />
+         <Button layoutX="56.0" layoutY="295.0" mnemonicParsing="false" onAction="#addToMyPlaylist" style="-fx-background-color: black;" text="Add" textFill="WHITE" />
          <Button fx:id="uploadSongButton" layoutX="442.0" layoutY="295.0" mnemonicParsing="false" onAction="#uploadSong" style="-fx-background-color: black;" text="Upload Song" textFill="WHITE" />
+         <Button layoutX="110.0" layoutY="295.0" mnemonicParsing="false" onAction="#removeFromMyPlaylist" style="-fx-background-color: black;" text="Remove" textFill="WHITE" />
       </AnchorPane>
    </top>
 </BorderPane>
