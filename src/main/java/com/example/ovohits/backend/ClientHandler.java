@@ -29,7 +29,7 @@ public class ClientHandler extends Thread {
     private final SocketAddress socketAddress;
 
     public ClientHandler(int port, SocketAddress socketAddress) throws IOException {
-        System.out.println("\033[1;33m" + "[Pending]: Initializing client thread..." + "\033[0m");
+        System.out.println(PrintColor.YELLOW + "[Pending]: Initializing client thread..." + PrintColor.RESET);
         this.port = port;
         this.socketAddress = socketAddress;
         this.datagramSocket = new DatagramSocket(port);
@@ -46,8 +46,8 @@ public class ClientHandler extends Thread {
         datagramSocket.receive(new DatagramPacket(
                 dataBuffer,
                 dataBuffer.length));
-        System.out.println("\033[1;32m" + "[Success]: Created client thread on port: " + "\033[1;35m" + port
-                + "\033[0m");
+        System.out.println(PrintColor.GREEN + "[Success]: Created client thread on port: " + "\033[1;35m" + port
+                + PrintColor.RESET);
     }
 
     private void invalidFunctionCall() throws IOException {
@@ -58,7 +58,7 @@ public class ClientHandler extends Thread {
                 dataBuffer,
                 dataBuffer.length,
                 socketAddress));
-        System.out.println("\033[1;31m" + "[Error]:   Request function invalid!" + "\033[0m");
+        System.out.println(PrintColor.RED + "[Error]:   Request function invalid!" + PrintColor.RESET);
     }
 
     private byte[] getByteFragments() throws IOException {
@@ -126,8 +126,8 @@ public class ClientHandler extends Thread {
             Request request;
             try { request = SerializationUtils.deserialize(getByteFragments()); }
             catch (IOException e) { throw new RuntimeException(e); }
-            System.out.println("\033[1;32m" + "[Success]: Called function: " + "\033[1;34m" + request.getFunction()
-                    + "\033[0m");
+            System.out.println(PrintColor.GREEN + "[Success]: Called function: " + "\033[1;34m" + request.getFunction()
+                    + PrintColor.RESET);
             switch (request.getFunction()) {
                 case "@addSavedSong" -> {
                     try { addSavedSong(request); }
@@ -173,16 +173,17 @@ public class ClientHandler extends Thread {
                 }
             }
         }
-        System.out.println("\033[1;32m" + "[Success]: Terminated thread on port: " + "\033[1;35m" + port + "\033[0m");
+        System.out.println(PrintColor.GREEN + "[Success]: Terminated thread on port: " + "\033[1;35m"
+                + port + PrintColor.RESET);
     }
 
     public void addSavedSong(Request request) throws IOException, SQLException {
-        System.out.println("\033[1;33m" + "[Pending]: Adding saved song to database..." + "\033[0m");
+        System.out.println(PrintColor.YELLOW + "[Pending]: Adding saved song to database..." + PrintColor.RESET);
         ArrayList<Integer> savedSongInfo = request.getSavedSongInfo();
         ArrayList<Integer> songIdList = new ArrayList<>(new SavedSongService()
                 .getSavedSongs(savedSongInfo.get(1)).stream().map(SavedSong::getSongId).toList());
         if (songIdList.contains(savedSongInfo.get(0))) {
-            System.out.println("\033[1;31m" + "[Error]:   Saved song already added!" + "\033[0m");
+            System.out.println(PrintColor.RED + "[Error]:   Saved song already added!" + PrintColor.RESET);
             Response response = new Response();
             response.setFunctionCalled(false);
             sendByteFragments(SerializationUtils.serialize(response));
@@ -191,26 +192,26 @@ public class ClientHandler extends Thread {
         new SavedSongService().add(new SavedSong(
                 savedSongInfo.get(0),
                 savedSongInfo.get(1)));
-        System.out.println("\033[1;32m" + "[Success]: Added saved song to database!" + "\033[0m");
+        System.out.println(PrintColor.GREEN + "[Success]: Added saved song to database!" + PrintColor.RESET);
         sendByteFragments(SerializationUtils.serialize(new Response()));
     }
 
     public void addSong(Request request, Response response) throws IOException, SQLException {
-        System.out.println("\033[1;33m" + "[Pending]: Adding song to database..." + "\033[0m");
+        System.out.println(PrintColor.YELLOW + "[Pending]: Adding song to database..." + PrintColor.RESET);
         ArrayList<String> songInfo = request.getSongInfo();
         new SongService().add(new Song(
                 new SerialBlob(request.getSongData()),
                 songInfo.get(0),
                 Integer.parseInt(songInfo.get(1))));
-        System.out.println("\033[1;32m" + "[Success]: Added song to database!" + "\033[0m");
+        System.out.println(PrintColor.GREEN + "[Success]: Added song to database!" + PrintColor.RESET);
         sendByteFragments(SerializationUtils.serialize(response));
     }
 
     public void addUser(Request request) throws IOException, SQLException {
-        System.out.println("\033[1;33m" + "[Pending]: Adding user to database..." + "\033[0m");
+        System.out.println(PrintColor.YELLOW + "[Pending]: Adding user to database..." + PrintColor.RESET);
         ArrayList<String> userInfo = request.getUserInfo();
         if (new UserService().getUser(userInfo.get(4)) != null) {
-            System.out.println("\033[1;31m" + "[Error]:   Username already taken!" + "\033[0m");
+            System.out.println(PrintColor.RED + "[Error]:   Username already taken!" + PrintColor.RESET);
             Response response = new Response();
             response.setFunctionCalled(false);
             sendByteFragments(SerializationUtils.serialize(response));
@@ -227,24 +228,24 @@ public class ClientHandler extends Thread {
         ArrayList<String> songInfo = request.getSongInfo();
         songInfo.set(1, Integer.toString(response.getUserId()));
         request.setSongInfo(songInfo);
-        System.out.println("\033[1;32m" + "[Success]: Added user to database!" + "\033[0m");
+        System.out.println(PrintColor.GREEN + "[Success]: Added user to database!" + PrintColor.RESET);
         addSong(request, response);
     }
 
     public void deleteSavedSong(Request request) throws IOException, SQLException {
-        System.out.println("\033[1;33m" + "[Pending]: Deleting saved song from database..." + "\033[0m");
+        System.out.println(PrintColor.YELLOW + "[Pending]: Deleting saved song from database..." + PrintColor.RESET);
         new SavedSongService().delete(request.getModelId());
         sendByteFragments(SerializationUtils.serialize(new Response()));
-        System.out.println("\033[1;32m" + "[Success]: Deleted saved song to database!" + "\033[0m");
+        System.out.println(PrintColor.GREEN + "[Success]: Deleted saved song to database!" + PrintColor.RESET);
     }
 
     public void getSong(Request request) throws IOException, SQLException {
         Song song = new SongService().getSong(request.getModelId());
         Response response = new Response(song != null);
         response.setSongData(SerializationUtils.serialize(song));
-        System.out.println("\033[1;33m" + "[Pending]: Sending song to client..." + "\033[0m");
+        System.out.println(PrintColor.YELLOW + "[Pending]: Sending song to client..." + PrintColor.RESET);
         sendByteFragments(SerializationUtils.serialize(response));
-        System.out.println("\033[1;32m" + "[Success]: Sent song to client!" + "\033[0m");
+        System.out.println(PrintColor.GREEN + "[Success]: Sent song to client!" + PrintColor.RESET);
     }
 
     public void getSavedSongs(Request request) throws IOException, SQLException {
@@ -252,26 +253,26 @@ public class ClientHandler extends Thread {
                 .getSavedSongs(request.getModelId()).stream().map(SerializationUtils::serialize).toList());
         Response response = new Response();
         response.setSavedSongDataList(savedSongDataList);
-        System.out.println("\033[1;33m" + "[Pending]: Sending saved songs to client..." + "\033[0m");
+        System.out.println(PrintColor.YELLOW + "[Pending]: Sending saved songs to client..." + PrintColor.RESET);
         sendByteFragments(SerializationUtils.serialize(response));
-        System.out.println("\033[1;32m" + "[Success]: Sent saved songs to client!" + "\033[0m");
+        System.out.println(PrintColor.GREEN + "[Success]: Sent saved songs to client!" + PrintColor.RESET);
     }
 
     public void getSongs() throws IOException, SQLException {
         ArrayList<byte[]> songDataList = new ArrayList<>(new SongService().getSongs()
                 .stream().map(SerializationUtils::serialize).toList());
-        System.out.println("\033[1;33m" + "[Pending]: Sending songs to client..." + "\033[0m");
+        System.out.println(PrintColor.YELLOW + "[Pending]: Sending songs to client..." + PrintColor.RESET);
         sendByteFragments(SerializationUtils.serialize(new Response(songDataList)));
-        System.out.println("\033[1;32m" + "[Success]: Sent songs to client!" + "\033[0m");
+        System.out.println(PrintColor.GREEN + "[Success]: Sent songs to client!" + PrintColor.RESET);
     }
 
     public void getUser(Request request) throws IOException, SQLException {
         User user = new UserService().getUser(request.getModelId());
         Response response = new Response(user != null);
         response.setUserData(SerializationUtils.serialize(user));
-        System.out.println("\033[1;33m" + "[Pending]: Sending user to client..." + "\033[0m");
+        System.out.println(PrintColor.YELLOW + "[Pending]: Sending user to client..." + PrintColor.RESET);
         sendByteFragments(SerializationUtils.serialize(response));
-        System.out.println("\033[1;32m" + "[Success]: Sent user to client!" + "\033[0m");
+        System.out.println(PrintColor.GREEN + "[Success]: Sent user to client!" + PrintColor.RESET);
     }
 
     public void login(Request request) throws IOException, SQLException {
@@ -279,9 +280,12 @@ public class ClientHandler extends Thread {
         User user = new UserService().getUser(loginInfo.get(0));
         Response response = new Response(user != null && user.getPassword().equals(loginInfo.get(1)));
         response.setUserId(user != null ? user.getId() : -1);
-        System.out.println("\033[1;33m" + "[Pending]: Sending login verification..." + "\033[0m");
+        System.out.println(PrintColor.YELLOW + "[Pending]: Sending login verification..." + PrintColor.RESET);
         sendByteFragments(SerializationUtils.serialize(response));
-        System.out.println("\033[1;32m" + "[Success]: Sent login verification!" + "\033[0m");
+        if (response.isExists())
+            System.out.println(PrintColor.GREEN + "[Success]: Login verification successful!" + PrintColor.RESET);
+        else System.out.println(PrintColor.RED + "[Error]:   User doesn't exist!" + PrintColor.RESET);
+
     }
 
     public void playSong() {

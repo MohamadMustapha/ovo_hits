@@ -9,10 +9,11 @@ public class Server {
 
     @SuppressWarnings("InfiniteLoopStatement")
     public static void main(String[] args) throws Exception {
-        System.out.print("\033[1;37m" + "Please enter a port number:" + "\033[0m ");
+        System.out.print(PrintColor.WHITE + "Please enter a port number:" + PrintColor.RESET + " ");
         port = scan.nextInt();
         DatagramSocket datagramSocket = ServerSocketConnection.getDatagramSocket(port);
-        System.out.println("\033[1;32m" + "[Success]: Server running on port: " + "\033[1;35m" + port + "\033[0m");
+        System.out.println(PrintColor.GREEN + "[Success]: Server running on port: " + PrintColor.PURPLE + port
+                + PrintColor.RESET);
 
         while (true) {
             byte[] dataBuffer = new byte[64000];
