@@ -9,7 +9,7 @@
    <left>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <ImageView fitHeight="408.0" fitWidth="375.0" layoutY="-7.0" pickOnBounds="true">
-            <Image url="@../../../../java/images/landing_logo.jpg" />
+            <Image url="@landing_logo.jpg" />
          </ImageView>
       </AnchorPane>
    </left>
