@@ -8,14 +8,14 @@ import java.util.Arrays;
 public class Response implements Serializable {
     @Serial
     private static final long serialVersionUID = 4806366312215947674L;
-    private ArrayList<byte[]> savedSongDataList;
-    private ArrayList<byte[]> songDataList;
-    private boolean exists;
+    private ArrayList<byte[]> savedSongDataList = new ArrayList<>();
+    private ArrayList<byte[]> songDataList = new ArrayList<>();
+    private boolean exists = false;
     private boolean functionCalled = true;
-    private byte[] songData;
-    private byte[] userData;
-    private int port;
-    private int userId;
+    private byte[] songData = new byte[0];
+    private byte[] userData = new byte[0];
+    private int port = -1;
+    private int userId = -1;
 
     public Response() { }
 

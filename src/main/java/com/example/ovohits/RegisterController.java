@@ -10,7 +10,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.apache.commons.lang3.SerializationUtils;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.*;
@@ -44,7 +43,7 @@ public class RegisterController {
         return pattern.matcher(emailInput.getText()).matches();
     }
 
-    public void addUser() throws IOException, SQLException {
+    public void addUser() {
         if (firstNameInput.getText().isBlank()) return;
         if (lastNameInput.getText().isBlank()) return;
         if (usernameInput.getText().isBlank()) return;
@@ -54,41 +53,48 @@ public class RegisterController {
         if (!songFile.exists()) return;
         if (listView.getItems().isEmpty()) return;
 
-        FileInputStream fileInputStream = new FileInputStream(songFile);
-        byte[] songData = new byte[(int) songFile.length()];
-        if (fileInputStream.read(songData) == -1) throw new IOException();
-        fileInputStream.close();
+        try {
+            FileInputStream fileInputStream = new FileInputStream(songFile);
+            byte[] songData = new byte[(int) songFile.length()];
+            if (fileInputStream.read(songData) == -1) throw new RuntimeException();
+            fileInputStream.close();
 
-        ArrayList<String> songInfo = new ArrayList<>(Arrays.asList(
-                songNameInput.getText(),
-                null));
-        ArrayList<String> userInfo = new ArrayList<>(Arrays.asList(
-                emailInput.getText(),
-                firstNameInput.getText(),
-                lastNameInput.getText(),
-                passwordInput.getText(),
-                usernameInput.getText()));
-        SocketConnection.sendByteFragments(SerializationUtils.serialize(new Request(
-                songInfo,
-                userInfo,
-                new SerialBlob(songData))));
-        Response response = SerializationUtils.deserialize(SocketConnection.getByteFragments());
+            ArrayList<String> songInfo = new ArrayList<>(Arrays.asList(
+                    songNameInput.getText(),
+                    null));
+            ArrayList<String> userInfo = new ArrayList<>(Arrays.asList(
+                    emailInput.getText(),
+                    firstNameInput.getText(),
+                    lastNameInput.getText(),
+                    passwordInput.getText(),
+                    usernameInput.getText()));
+            SocketConnection.sendRequest(new Request(
+                    songInfo,
+                    userInfo,
+                    new SerialBlob(songData)));
+        } catch (IOException | SQLException e) { throw new RuntimeException(e); }
+
+        Response response = SocketConnection.getResponse();
         if (response.isFunctionCalled()) {
             Client.setClientId(response.getUserId());
             goMain();
         }
     }
 
-    public void goLanding() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Landing.class.getResource("Landing.fxml"));
-        Stage stage = (Stage) returnButton.getScene().getWindow();
-        stage.setScene(new Scene(fxmlLoader.load()));
+    public void goLanding() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(Landing.class.getResource("Landing.fxml"));
+            Stage stage = (Stage) returnButton.getScene().getWindow();
+            stage.setScene(new Scene(fxmlLoader.load()));
+        } catch (IOException e) { throw new RuntimeException(e); }
     }
 
-    public void goMain() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Main.fxml"));
-        Stage stage = (Stage) returnButton.getScene().getWindow();
-        stage.setScene(new Scene(fxmlLoader.load()));
+    public void goMain() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Main.fxml"));
+            Stage stage = (Stage) returnButton.getScene().getWindow();
+            stage.setScene(new Scene(fxmlLoader.load()));
+        } catch (IOException e) { throw new RuntimeException(e); }
     }
 
     public void uploadSong() {
@@ -96,10 +102,8 @@ public class RegisterController {
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("MP3 Files", "*.mp3"));
         songFile = fileChooser.showOpenDialog(null);
         if (songFile != null) {
-            if (listView.getItems().isEmpty())
-                listView.getItems().add(songFile.getName());
-            else
-                listView.getItems().set(0, songFile.getName());
+            if (listView.getItems().isEmpty()) listView.getItems().add(songFile.getName());
+            else listView.getItems().set(0, songFile.getName());
         }
     }
 }

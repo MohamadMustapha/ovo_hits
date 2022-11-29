@@ -1,46 +1,47 @@
 package com.example.ovohits;
 
+import javax.sql.rowset.serial.SerialBlob;
 import java.io.Serial;
 import java.io.Serializable;
-import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Request implements Serializable {
     @Serial
     private static final long serialVersionUID = -5576525072357338113L;
-    private ArrayList<String> loginInfo;
-    private ArrayList<Integer> savedSongInfo;
-    private ArrayList<String> songInfo;
-    private ArrayList<String> userInfo;
-    private Blob songData;
-    private int modelId;
-    private String function;
+    private ArrayList<String> loginInfo = new ArrayList<>();
+    private ArrayList<Integer> savedSongInfo = new ArrayList<>();
+    private ArrayList<String> songInfo = new ArrayList<>();
+    private ArrayList<String> userInfo = new ArrayList<>();
+    private SerialBlob songData = new SerialBlob(new byte[0]);
+    private int modelId = -1;
+    private String function = "";
 
-    public Request() { }
+    public Request() throws SQLException { }
 
-    public Request(ArrayList<String> loginInfo) {
+    public Request(ArrayList<String> loginInfo) throws SQLException {
         this.loginInfo = loginInfo;
         this.function = "@login";
     }
 
-    public Request(ArrayList<String> songInfo, Blob songData) {
+    public Request(ArrayList<String> songInfo, SerialBlob songData) throws SQLException {
         this.songInfo = songInfo;
         this.songData = songData;
         this.function = "@addSong";
     }
-    public Request(ArrayList<String> songInfo, ArrayList<String> userInfo, Blob songData) {
+    public Request(ArrayList<String> songInfo, ArrayList<String> userInfo, SerialBlob songData) throws SQLException {
         this.songInfo = songInfo;
         this.userInfo = userInfo;
         this.songData = songData;
         this.function = "@addUser";
     }
 
-    public Request(int modelId, String function) {
+    public Request(int modelId, String function) throws SQLException {
         this.modelId = modelId;
         this.function = function;
     }
 
-    public Request(String function) { this.function = function; }
+    public Request(String function) throws SQLException { this.function = function; }
 
     public ArrayList<String> getLoginInfo() { return loginInfo; }
 
@@ -58,9 +59,9 @@ public class Request implements Serializable {
 
     public void setUserInfo(ArrayList<String> userInfo) { this.userInfo = userInfo; }
 
-    public Blob getSongData() { return songData; }
+    public SerialBlob getSongData() { return songData; }
 
-    public void setSongData(Blob songData) { this.songData = songData; }
+    public void setSongData(SerialBlob songData) { this.songData = songData; }
 
     public int getModelId() { return modelId; }
 
