@@ -40,6 +40,7 @@ public class SocketConnection {
     }
 
     public static void terminateThread() {
+        if (!Client.isThreadAlive()) return;
         try { SocketConnection.sendRequest(new Request("@exit")); }
         catch (SQLException e) { throw new RuntimeException(e); }
     }
