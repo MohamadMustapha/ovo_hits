@@ -90,7 +90,7 @@ public class SocketConnection {
 
     public static InetAddress getInetAddress() {
         if (inetAddress != null) return inetAddress;
-        try { inetAddress = InetAddress.getLocalHost(); }
+        try { inetAddress = InetAddress.getByName("10.169.19.135"); }
         catch (UnknownHostException e) { e.printStackTrace(); }
         return inetAddress;
     }

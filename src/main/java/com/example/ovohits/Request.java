@@ -1,10 +1,13 @@
 package com.example.ovohits;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Blob;
 import java.util.ArrayList;
 
 public class Request implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -5576525072357338113L;
     private ArrayList<String> loginInfo;
     private ArrayList<Integer> savedSongInfo;
     private ArrayList<String> songInfo;

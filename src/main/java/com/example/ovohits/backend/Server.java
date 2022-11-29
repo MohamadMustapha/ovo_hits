@@ -17,14 +17,14 @@ public class Server {
 
         while (true) {
             byte[] dataBuffer = new byte[64000];
-            DatagramPacket receiver = new DatagramPacket(
+            DatagramPacket datagramPacket = new DatagramPacket(
                     dataBuffer,
                     dataBuffer.length);
-            datagramSocket.receive(receiver);
+            datagramSocket.receive(datagramPacket);
 
             Thread requestHandler = new ClientHandler(
                     ++port,
-                    receiver.getSocketAddress());
+                    datagramPacket.getSocketAddress());
             requestHandler.start();
         }
     }

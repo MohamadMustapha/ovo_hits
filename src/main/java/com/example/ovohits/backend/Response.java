@@ -1,10 +1,13 @@
 package com.example.ovohits.backend;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Response implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 4806366312215947674L;
     private ArrayList<byte[]> savedSongDataList;
     private ArrayList<byte[]> songDataList;
     private boolean exists;
