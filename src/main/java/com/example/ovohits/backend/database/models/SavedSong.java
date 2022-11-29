@@ -1,8 +1,11 @@
 package com.example.ovohits.backend.database.models;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 public class SavedSong implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -7695323309134993674L;
     private int id;
     private int songId;
     private int userId;

@@ -1,9 +1,12 @@
 package com.example.ovohits.backend.database.models;
 
 import javax.sql.rowset.serial.SerialBlob;
+import java.io.Serial;
 import java.io.Serializable;
 
 public class Song implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 5801737563321030113L;
     private int id;
     private SerialBlob data;
     private String name;
