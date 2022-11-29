@@ -1,11 +1,6 @@
 package com.example.ovohits;
 
-import java.io.Serial;
-import java.io.Serializable;
-
-public class Client implements Serializable {
-    @Serial
-    private static final long serialVersionUID = -8830849998498465638L;
+public class Client {
     private static boolean threadAlive = false;
     private static Integer clientId = null;
 

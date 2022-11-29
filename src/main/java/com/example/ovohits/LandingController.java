@@ -8,10 +8,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import org.apache.commons.lang3.SerializationUtils;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -26,57 +25,35 @@ public class LandingController {
     private TextField usernameField;
 
     public void exit() {
-        try { SocketConnection.sendByteFragments(SerializationUtils.serialize(new Request("@exit"))); }
-        catch (IOException e) { throw new RuntimeException(e); }
+        try { SocketConnection.sendRequest(new Request("@exit")); }
+        catch (SQLException e) { throw new RuntimeException(e); }
     }
 
-    public void goRegister() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Register.class.getResource("Register.fxml"));
-        Stage stage = (Stage) registerButton.getScene().getWindow();
-        stage.setScene(new Scene(fxmlLoader.load()));
+    public void goRegister() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(Register.class.getResource("Register.fxml"));
+            Stage stage = (Stage) registerButton.getScene().getWindow();
+            stage.setScene(new Scene(fxmlLoader.load()));
+        } catch (IOException e) { throw new RuntimeException(e); }
     }
 
-    public void initialize() throws IOException {
-        if (Client.isThreadAlive()) return;
-        byte[] dataBuffer = SerializationUtils.serialize(new Request());
-        SocketConnection.getDatagramSocket().send(new DatagramPacket(
-                dataBuffer,
-                dataBuffer.length,
-                SocketConnection.getInetAddress(),
-                SocketConnection.getPort()));
-
-        dataBuffer = new byte[64000];
-        DatagramPacket datagramPacket = new DatagramPacket(
-                dataBuffer,
-                dataBuffer.length);
-        SocketConnection.getDatagramSocket().receive(datagramPacket);
-        Response response = SerializationUtils.deserialize(dataBuffer);
-        SocketConnection.setPort(response.getPort());
-        Client.setThreadAlive(true);
-
-        dataBuffer = SerializationUtils.serialize(new Request());
-        SocketConnection.getDatagramSocket().send(new DatagramPacket(
-                dataBuffer,
-                dataBuffer.length,
-                SocketConnection.getInetAddress(),
-                SocketConnection.getPort()));
-    }
-
-    public void login() throws Exception {
+    public void login() {
         if (usernameField.getText().isBlank()) return;
         if (passwordField.getText().isBlank()) return;
 
-        ArrayList<String> loginInfo = new ArrayList<>(Arrays.asList(
-                usernameField.getText(),
-                passwordField.getText()));
-        SocketConnection.sendByteFragments(SerializationUtils.serialize(new Request(loginInfo)));
+        try {
+            ArrayList<String> loginInfo = new ArrayList<>(Arrays.asList(
+                    usernameField.getText(),
+                    passwordField.getText()));
+            SocketConnection.sendRequest(new Request(loginInfo));
 
-        Response response = SerializationUtils.deserialize(SocketConnection.getByteFragments());
-        if (response.isFunctionCalled() && response.isExists()) {
-            Client.setClientId(response.getUserId());
-            FXMLLoader fxmlLoader = new FXMLLoader(LandingController.class.getResource("Main.fxml"));
-            Stage stage = (Stage) loginButton.getScene().getWindow();
-            stage.setScene(new Scene(fxmlLoader.load()));
-        }
+            Response response = SocketConnection.getResponse();
+            if (response.isFunctionCalled() && response.isExists()) {
+                Client.setClientId(response.getUserId());
+                FXMLLoader fxmlLoader = new FXMLLoader(LandingController.class.getResource("Main.fxml"));
+                Stage stage = (Stage) loginButton.getScene().getWindow();
+                stage.setScene(new Scene(fxmlLoader.load()));
+            }
+        } catch (IOException | SQLException e) { throw new RuntimeException(e); }
     }
 }

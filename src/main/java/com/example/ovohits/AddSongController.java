@@ -8,7 +8,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import org.apache.commons.lang3.SerializationUtils;
 
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.*;
@@ -24,29 +23,33 @@ public class AddSongController {
     @FXML
     private TextField songNameInput;
 
-    public void addSong() throws IOException, SQLException {
+    public void addSong() {
         if (!songFile.exists()) return;
         if (listView.getItems().isEmpty()) return;
 
-        FileInputStream fileInputStream = new FileInputStream(songFile);
-        byte[] songData = new byte[(int) songFile.length()];
-        if (fileInputStream.read(songData) == -1) throw new RuntimeException();
-        fileInputStream.close();
+        try {
+            FileInputStream fileInputStream = new FileInputStream(songFile);
+            byte[] songData = new byte[(int) songFile.length()];
+            if (fileInputStream.read(songData) == -1) throw new RuntimeException();
+            fileInputStream.close();
 
-        ArrayList<String> songInfo = new ArrayList<>(Arrays.asList(
-                songNameInput.getText(),
-                Integer.toString(Client.getClientId())));
-        SocketConnection.sendByteFragments(SerializationUtils.serialize(new Request(
-                songInfo,
-                new SerialBlob(songData))));
-        SocketConnection.getByteFragments();
+            ArrayList<String> songInfo = new ArrayList<>(Arrays.asList(
+                    songNameInput.getText(),
+                    Integer.toString(Client.getClientId())));
+            SocketConnection.sendRequest(new Request(
+                    songInfo,
+                    new SerialBlob(songData)));
+        } catch (IOException | SQLException e) { throw new RuntimeException(e); }
+
         goMain();
     }
 
-    public void goMain() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Main.fxml"));
-        Stage stage = (Stage) returnButton.getScene().getWindow();
-        stage.setScene(new Scene(fxmlLoader.load()));
+    public void goMain() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Main.fxml"));
+            Stage stage = (Stage) returnButton.getScene().getWindow();
+            stage.setScene(new Scene(fxmlLoader.load()));
+        } catch (IOException e) { throw new RuntimeException(e); }
     }
 
     public void uploadSong() {
@@ -54,10 +57,8 @@ public class AddSongController {
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("MP3 Files", "*.mp3"));
         songFile = fileChooser.showOpenDialog(null);
         if (songFile != null) {
-            if (listView.getItems().isEmpty())
-                listView.getItems().add(songFile.getName());
-            else
-                listView.getItems().set(0, songFile.getName());
+            if (listView.getItems().isEmpty()) listView.getItems().add(songFile.getName());
+            else listView.getItems().set(0, songFile.getName());
         }
     }
 }
