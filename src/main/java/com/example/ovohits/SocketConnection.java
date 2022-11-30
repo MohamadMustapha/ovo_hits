@@ -23,7 +23,7 @@ public class SocketConnection {
 
     public static void setSocket() {
         try {
-            SocketConnection.socket = new Socket("localhost", port);
+            SocketConnection.socket = new Socket("10.169.19.135", port);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

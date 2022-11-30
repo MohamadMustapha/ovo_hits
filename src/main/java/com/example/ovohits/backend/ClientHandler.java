@@ -139,6 +139,7 @@ public class ClientHandler implements Runnable {
         ArrayList<String> songInfo = request.getSongInfo();
         songInfo.set(1, Integer.toString(new UserService().getUser(userInfo.get(4)).getId()));
         request.setSongInfo(songInfo);
+        Server.addClient(new UserService().getUser(userInfo.get(4)).getId(), socket.getLocalAddress(), port);
         System.out.println(PrintColor.GREEN + "[Success]: Added user to database!" + PrintColor.RESET);
         sendResponse(new Response());
         addSong(request);
