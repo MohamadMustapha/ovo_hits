@@ -24,17 +24,23 @@ public class LandingController {
     @FXML
     private TextField usernameField;
 
-    public void exit() {
-        try { SocketConnection.sendRequest(new Request("@exit")); }
-        catch (SQLException e) { throw new RuntimeException(e); }
-    }
-
     public void goRegister() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(Register.class.getResource("Register.fxml"));
             Stage stage = (Stage) registerButton.getScene().getWindow();
             stage.setScene(new Scene(fxmlLoader.load()));
         } catch (IOException e) { throw new RuntimeException(e); }
+    }
+
+    public void initialize() {
+        SocketConnection.setSocket();
+
+        try { SocketConnection.sendRequest(new Request()); }
+        catch (SQLException e) { throw new RuntimeException(e); }
+
+        SocketConnection.setPort(SocketConnection.getResponse().getPort());
+        SocketConnection.setSocket();
+        Client.setThreadAlive(true);
     }
 
     public void login() {

@@ -13,8 +13,9 @@ public class Request implements Serializable {
     private ArrayList<Integer> savedSongInfo = new ArrayList<>();
     private ArrayList<String> songInfo = new ArrayList<>();
     private ArrayList<String> userInfo = new ArrayList<>();
-    private SerialBlob songData = new SerialBlob(new byte[0]);
     private int modelId = -1;
+    private SerialBlob songData = new SerialBlob(new byte[0]);
+    private String username = "";
     private String function = "";
 
     public Request() throws SQLException { }
@@ -59,13 +60,17 @@ public class Request implements Serializable {
 
     public void setUserInfo(ArrayList<String> userInfo) { this.userInfo = userInfo; }
 
+    public int getModelId() { return modelId; }
+
+    public void setModelId(int modelId) { this.modelId = modelId; }
+
     public SerialBlob getSongData() { return songData; }
 
     public void setSongData(SerialBlob songData) { this.songData = songData; }
 
-    public int getModelId() { return modelId; }
+    public String getUsername() { return username; }
 
-    public void setModelId(int modelId) { this.modelId = modelId; }
+    public void setUsername(String username) { this.username = username; }
 
     public String getFunction() { return function; }
 
