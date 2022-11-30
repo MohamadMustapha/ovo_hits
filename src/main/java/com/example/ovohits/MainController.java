@@ -50,7 +50,7 @@ public class MainController {
 
     public void initialize() {
         try {
-            Response response = sendRequest(new Request("@getSongs"));
+            Response response = sendRequest(new Request("@getAllSongs"));
             ArrayList<Song> songList = new ArrayList<>(response.getSongDataList().stream()
                     .map(bytes -> (Song) SerializationUtils.deserialize(bytes)).toList());
             for (Song song : songList) {

@@ -6,13 +6,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public interface SongRepository {
-    int add(Song song) throws SQLException;
+    int add(Song song);
 
-    void delete(int id) throws  SQLException;
+    void delete(int id);
 
-    void update(Song song) throws SQLException;
+    void update(Song song);
 
-    Song getSong(int id) throws SQLException;
+    Song getSong(int id);
 
-    ArrayList<Song> getSongs() throws SQLException;
+    ArrayList<Song> getSongs();
+
+    ArrayList<Song> getSongs(int userId);
 }

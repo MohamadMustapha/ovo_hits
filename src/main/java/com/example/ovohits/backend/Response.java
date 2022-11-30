@@ -10,6 +10,7 @@ public class Response implements Serializable {
     private static final long serialVersionUID = 4806366312215947674L;
     private ArrayList<byte[]> savedSongDataList = new ArrayList<>();
     private ArrayList<byte[]> songDataList = new ArrayList<>();
+    private ArrayList<String> onlineUsernameList = new ArrayList<>();
     private boolean exists = false;
     private boolean functionCalled = true;
     private byte[] songData = new byte[0];
@@ -34,6 +35,12 @@ public class Response implements Serializable {
     public ArrayList<byte[]> getSongDataList() { return songDataList; }
 
     public void setSongDataList(ArrayList<byte[]> songDataList) { this.songDataList = songDataList; }
+
+    public ArrayList<String> getOnlineUsernameList() { return onlineUsernameList; }
+
+    public void setOnlineUsernameList(ArrayList<String> onlineUsernameList) {
+        this.onlineUsernameList = onlineUsernameList;
+    }
 
     public boolean isExists() { return exists; }
 

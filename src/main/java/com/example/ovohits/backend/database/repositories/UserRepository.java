@@ -6,15 +6,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public interface UserRepository {
-    int add(User user) throws SQLException;
+    int add(User user);
 
-    void delete(int id) throws SQLException;
+    void delete(int id);
 
-    void update(User user) throws SQLException;
+    void update(User user);
 
-    User getUser(int id) throws SQLException;
+    User getUser(int id);
 
-    User getUser(String username) throws SQLException;
+    User getUser(String username);
 
-    ArrayList<User> getUsers() throws SQLException;
+    ArrayList<User> getUsers();
 }
