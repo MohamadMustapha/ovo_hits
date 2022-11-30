@@ -1,9 +1,11 @@
 package com.example.ovohits;
 
 import com.example.ovohits.backend.Response;
+import com.example.ovohits.backend.Server;
 import com.example.ovohits.backend.database.models.SavedSong;
 import com.example.ovohits.backend.database.models.Song;
 import com.example.ovohits.backend.database.models.User;
+import com.example.ovohits.backend.database.services.UserService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -17,15 +19,18 @@ import org.apache.commons.lang3.SerializationUtils;
 import java.io.File;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainController {
 
+    @FXML
+    public ListView<String> usersView;
     @FXML
     private Button returnButton;
     @FXML
@@ -36,11 +41,13 @@ public class MainController {
     private ListView<String> songsView;
     @FXML
     private ProgressBar songProgressBar;
-    private String songUrl = "C:\\Users\\Hashem Shibli\\Desktop\\MP3 Files\\AUGHHHH Mega Bass Boosted.mp3";
-    private Media media = new Media(new File(songUrl).toURI().toString());
-    private MediaPlayer mediaPlayer = new MediaPlayer(media);
+    private Media media;
+    private MediaPlayer mediaPlayer;
     private boolean isPlaying = false;
+    private Timer timer;
+    @FXML
     private Label songLabel;
+
     private Response sendRequest(Request request) {
         SocketConnection.sendRequest(request);
         return SocketConnection.getResponse();
@@ -86,8 +93,6 @@ public class MainController {
         if (response.isFunctionCalled()) myPlaylistView.getItems().add(songsView.getSelectionModel().getSelectedItem());
     }
 
-
-
     public void logout() {
         Client.setClientId(null);
         try {
@@ -97,13 +102,12 @@ public class MainController {
         } catch (IOException e) { throw new RuntimeException(e); }
     }
 
-    public void selectSong() throws IOException {
+    public void selectSong() {
         if (isPlaying) {
             mediaPlayer.stop();
             isPlaying = false;
         }
         try {
-            songUrl = "";
             //ID to get
             String selectedSong = myPlaylistView.getSelectionModel().getSelectedItem();
             System.out.println(selectedSong);
@@ -113,6 +117,7 @@ public class MainController {
             Song song = SerializationUtils.deserialize(response.getSongData());
 
             File f = new File( id+ ".mp3");
+            songLabel.setText(id+ "");
 
             System.out.println(f.getAbsolutePath());
             if(f.exists()){
@@ -133,23 +138,26 @@ public class MainController {
         }
     }
 
-    public void playSong() throws IOException {
+    public void playSong() {
         selectSong();
         mediaPlayer = new MediaPlayer(media);
+        beginTimer();
         mediaPlayer.play();
         isPlaying = true;
     }
-    public void pauseSong() throws IOException {
+    public void pauseSong() {
         if(isPlaying) {
 //            selectSong();
 //            mediaPlayer = new MediaPlayer(media);
+            cancelTimer();
             mediaPlayer.pause();
             isPlaying = false;
         }
     }
-    public void resetSong() throws IOException {
+    public void resetSong() {
 //        selectSong();
 //        mediaPlayer = new MediaPlayer(media);
+        songProgressBar.setProgress(0);
         mediaPlayer.seek(Duration.seconds(0));
         isPlaying = true;
     }
@@ -173,5 +181,27 @@ public class MainController {
             Stage stage = (Stage) uploadSongButton.getScene().getWindow();
             stage.setScene(new Scene(fxmlLoader.load()));
         } catch (IOException e) { throw new RuntimeException(e); }
+    }
+    public void beginTimer(){
+       timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                isPlaying = true;
+                double current = mediaPlayer.getCurrentTime().toSeconds();
+                double end = media.getDuration().toSeconds();
+                //System.out.println(current / end);
+                songProgressBar.setProgress(current / end);
+
+                if (current / end == 1) cancelTimer();
+
+            }
+
+        };
+       timer.scheduleAtFixedRate(task, 1000, 1000);
+    }
+    public void cancelTimer(){
+        isPlaying = false;
+        timer.cancel();
     }
 }
