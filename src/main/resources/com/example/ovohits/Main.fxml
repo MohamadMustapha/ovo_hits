@@ -28,7 +28,7 @@
    </bottom>
    <right>
       <AnchorPane prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: #a49059;" BorderPane.alignment="CENTER">
-         <ListView fx:id="usersView" layoutX="428.0" layoutY="65.0" prefHeight="120.0" prefWidth="250.0" style="-fx-border-color: FFD700; -fx-background-radius: 5px; -fx-border-radius: 5px;" />
+         <ListView fx:id="usersView" layoutX="428.0" layoutY="65.0" onMouseClicked="#filterSongs" prefHeight="120.0" prefWidth="250.0" style="-fx-border-color: FFD700; -fx-background-radius: 5px; -fx-border-radius: 5px;" />
          <ListView fx:id="myPlaylistView" layoutX="428.0" layoutY="260.0" prefHeight="120.0" prefWidth="250.0" style="-fx-border-color: FFD700; -fx-background-radius: 5px; -fx-border-radius: 5px;" />
          <Label layoutX="330.0" layoutY="260.0" prefHeight="47.0" prefWidth="98.0" text="Playlist" textAlignment="CENTER" textFill="#faefef">
             <font>

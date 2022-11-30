@@ -1,11 +1,9 @@
 package com.example.ovohits;
 
 import com.example.ovohits.backend.Response;
-import com.example.ovohits.backend.Server;
 import com.example.ovohits.backend.database.models.SavedSong;
 import com.example.ovohits.backend.database.models.Song;
 import com.example.ovohits.backend.database.models.User;
-import com.example.ovohits.backend.database.services.UserService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -48,22 +46,34 @@ public class MainController {
     @FXML
     private Label songLabel;
 
-    private Response sendRequest(Request request) {
-        SocketConnection.sendRequest(request);
-        return SocketConnection.getResponse();
-    }
-    public void initialize() {
+    private void getAllSongs() {
         try {
-            Response response = sendRequest(new Request("@getAllSongs"));
+            Response response = sendRequest(new Request("@getOnlineUsers"));
+            usersView.getItems().addAll(response.getOnlineUsernameList().stream().map(username ->
+                    "Status: Online | User: " + username).toArray(String[]::new));
+
+            response = sendRequest(new Request("@getAllSongs"));
             ArrayList<Song> songList = new ArrayList<>(response.getSongDataList().stream()
                     .map(bytes -> (Song) SerializationUtils.deserialize(bytes)).toList());
             for (Song song : songList) {
                 response = sendRequest(new Request(song.getUserId(), "@getUser"));
                 User user = SerializationUtils.deserialize(response.getUserData());
-                songsView.getItems().add(song.getName() + " from: " + user.getUsername() + " id: " + song.getId());
+                songsView.getItems().add(song.getName() + ".mp3   |   from: " + user.getUsername() + "   |   id: "
+                        + song.getId());
             }
+        } catch (SQLException e) { throw new RuntimeException(e); }
 
-            response = sendRequest(new Request(
+    }
+
+    private Response sendRequest(Request request) {
+        SocketConnection.sendRequest(request);
+        return SocketConnection.getResponse();
+    }
+
+    public void initialize() {
+        getAllSongs();
+        try {
+            Response response = sendRequest(new Request(
                     Client.getClientId(),
                     "@getSavedSongs"));
             ArrayList<SavedSong> savedSongList = new ArrayList<>(response.getSavedSongDataList().stream()
@@ -73,7 +83,8 @@ public class MainController {
                 Song song = SerializationUtils.deserialize(response.getSongData());
                 response = sendRequest(new Request(savedSong.getUserId(), "@getUser"));
                 User user = SerializationUtils.deserialize(response.getUserData());
-                myPlaylistView.getItems().add(song.getName() + " from: " + user.getUsername() + " id: " + song.getId());
+                myPlaylistView.getItems().add(song.getName() + ".mp3   |   from: " + user.getUsername() + "   |   id: "
+                        + song.getId());
             }
         } catch (SQLException e) { throw new RuntimeException(e); }
     }
@@ -93,6 +104,34 @@ public class MainController {
         if (response.isFunctionCalled()) myPlaylistView.getItems().add(songsView.getSelectionModel().getSelectedItem());
     }
 
+    public void filterSongs() {
+        String selectedUser = usersView.getSelectionModel().getSelectedItem();
+
+        try {
+            Request request = new Request("@getUser");
+            request.setUsername(selectedUser.substring(Integer.parseInt(selectedUser.substring(
+                    selectedUser.lastIndexOf(" ") + 1))));
+            Response response = SocketConnection.getResponse();
+            if (response.isFunctionCalled()) {
+                User user = SerializationUtils.deserialize(response.getUserData());
+                request = new Request("@getSongs");
+                request.setModelId(user.getId());
+                SocketConnection.sendRequest(request);
+
+                response = SocketConnection.getResponse();
+                ArrayList<Song> songList = new ArrayList<>(response.getSongDataList().stream()
+                        .map(bytes -> (Song) SerializationUtils.deserialize(bytes)).toList());
+                songsView.getItems().clear();
+                for (Song song : songList) {
+                    response = sendRequest(new Request(song.getUserId(), "@getUser"));
+                    user = SerializationUtils.deserialize(response.getUserData());
+                    songsView.getItems().add(song.getName() + ".mp3   |   from: " + user.getUsername() + "   |   id: "
+                            + song.getId());
+                }
+            }
+        } catch (SQLException e) { throw new RuntimeException(e); }
+    }
+
     public void logout() {
         Client.setClientId(null);
         try {
@@ -101,6 +140,8 @@ public class MainController {
             stage.setScene(new Scene(fxmlLoader.load()));
         } catch (IOException e) { throw new RuntimeException(e); }
     }
+
+    public void resetSongs() { getAllSongs(); }
 
     public void selectSong() {
         if (isPlaying) {

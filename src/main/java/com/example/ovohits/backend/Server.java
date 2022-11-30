@@ -23,6 +23,8 @@ public class Server {
         clients.put(userId, new Pair<>(inetAddress, port));
     }
 
+    public static void deleteClient(Integer userId) { clients.remove(userId); }
+
     public static ArrayList<Integer> getOnlineUsers() { return new ArrayList<>(clients.keySet()); }
 
     public static ArrayList<Song> getSongs() {
