@@ -10,6 +10,8 @@ module com.example.ovohits {
     requires org.apache.commons.lang3;
     requires org.controlsfx.controls;
     requires org.kordamp.bootstrapfx.core;
+    requires javafx.media;
+
 
     exports com.example.ovohits;
     opens com.example.ovohits to javafx.fxml;

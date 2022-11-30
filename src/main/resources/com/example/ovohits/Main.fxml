@@ -4,32 +4,43 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.ovohits.MainController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: #a49059;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.ovohits.MainController">
    <bottom>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #005da3;" BorderPane.alignment="CENTER">
-         <Button layoutX="160.0" layoutY="14.0" mnemonicParsing="false" onAction="#playSong" style="-fx-background-color: black;" text="Play" textFill="WHITE" />
-         <Button layoutX="274.0" layoutY="14.0" mnemonicParsing="false" style="-fx-background-color: black;" text="Pause" textFill="WHITE" />
-         <Button layoutX="386.0" layoutY="14.0" mnemonicParsing="false" style="-fx-background-color: black;" text="Reset" textFill="WHITE" />
-         <Button fx:id="returnButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#logout" style="-fx-background-color: black;" text="Return" textFill="WHITE" />
+      <AnchorPane prefHeight="66.0" prefWidth="600.0" style="-fx-background-color: #a49059;" BorderPane.alignment="CENTER">
+         <Button layoutX="132.0" layoutY="27.0" mnemonicParsing="false" onAction="#playSong" style="-fx-background-color: white;" text="Play" />
+         <Button layoutX="552.0" layoutY="27.0" mnemonicParsing="false" onAction="#pauseSong" style="-fx-background-color: white;" text="Pause" />
+         <Button layoutX="630.0" layoutY="27.0" mnemonicParsing="false" onAction="#resetSong" style="-fx-background-color: white;" text="Reset">
+            <font>
+               <Font name="JetBrains Mono Regular" size="12.800000190734863" />
+            </font></Button>
+         <Button fx:id="returnButton" layoutX="14.0" layoutY="26.0" mnemonicParsing="false" onAction="#logout" style="-fx-background-color: white;" text="Return" />
+         <ProgressBar fx:id="songProgressBar" layoutX="194.0" layoutY="30.0" prefHeight="19.0" prefWidth="337.0" progress="0.5" />
       </AnchorPane>
    </bottom>
-   <top>
-      <AnchorPane prefHeight="347.0" prefWidth="600.0" style="-fx-background-color: #005da3;" BorderPane.alignment="CENTER">
-         <ListView fx:id="myPlaylistView" layoutX="14.0" layoutY="74.0" prefHeight="200.0" prefWidth="200.0" />
-         <ListView fx:id="songsView" layoutX="386.0" layoutY="74.0" prefHeight="197.0" prefWidth="200.0" />
-         <Label layoutX="41.0" layoutY="16.0" prefHeight="55.0" prefWidth="146.0" text="My Playlist" textAlignment="CENTER" textFill="#faefef">
+   <right>
+      <AnchorPane prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: #a49059;" BorderPane.alignment="CENTER">
+         <ListView fx:id="myPlaylistView" layoutX="487.0" layoutY="51.0" prefHeight="121.0" prefWidth="198.0" />
+         <ListView fx:id="songsView" layoutX="486.0" layoutY="242.0" prefHeight="111.0" prefWidth="200.0" />
+         <Label layoutX="375.0" layoutY="80.0" prefHeight="47.0" prefWidth="106.0" text="Playlist" textAlignment="CENTER" textFill="#faefef">
             <font>
                <Font size="32.0" />
             </font>
          </Label>
-         <Label layoutX="443.0" layoutY="7.0" prefHeight="74.0" prefWidth="86.0" text="Songs" textAlignment="CENTER" textFill="#f7f2f2">
+         <Label layoutX="385.0" layoutY="250.0" prefHeight="48.0" prefWidth="86.0" text="Songs" textAlignment="CENTER" textFill="#f7f2f2">
             <font>
                <Font size="32.0" />
             </font>
          </Label>
-         <Button layoutX="56.0" layoutY="295.0" mnemonicParsing="false" onAction="#addToMyPlaylist" style="-fx-background-color: black;" text="Add" textFill="WHITE" />
-         <Button fx:id="uploadSongButton" layoutX="442.0" layoutY="295.0" mnemonicParsing="false" onAction="#uploadSong" style="-fx-background-color: black;" text="Upload Song" textFill="WHITE" />
-         <Button layoutX="110.0" layoutY="295.0" mnemonicParsing="false" onAction="#removeFromMyPlaylist" style="-fx-background-color: black;" text="Remove" textFill="WHITE" />
+         <Button layoutX="644.0" layoutY="368.0" mnemonicParsing="false" onAction="#addToMyPlaylist" style="-fx-background-color: white;" text="Add">
+            <font>
+               <Font name="JetBrains Mono Regular" size="12.800000190734863" />
+            </font></Button>
+         <Button fx:id="uploadSongButton" layoutX="529.0" layoutY="368.0" mnemonicParsing="false" onAction="#uploadSong" style="-fx-background-color: white;" text="Upload Song" />
+         <Button layoutX="620.0" layoutY="186.0" mnemonicParsing="false" onAction="#removeFromMyPlaylist" style="-fx-background-color: white;" text="Remove" />
+         <Label fx:id="songLabel" alignment="CENTER" layoutX="230.0" layoutY="418.0" prefHeight="19.0" prefWidth="267.0" text="OVO Hits" textFill="WHITE">
+            <font>
+               <Font size="24.0" />
+            </font></Label>
       </AnchorPane>
-   </top>
+   </right>
 </BorderPane>
