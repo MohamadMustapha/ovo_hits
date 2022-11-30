@@ -17,7 +17,6 @@ import org.apache.commons.lang3.SerializationUtils;
 import java.io.File;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -36,11 +35,12 @@ public class MainController {
     private ListView<String> songsView;
     @FXML
     private ProgressBar songProgressBar;
-    private String songUrl = "C:\\Users\\Hashem Shibli\\Desktop\\MP3 Files\\AUGHHHH Mega Bass Boosted.mp3";
-    private Media media = new Media(new File(songUrl).toURI().toString());
-    private MediaPlayer mediaPlayer = new MediaPlayer(media);
+    private Media media;
+    private MediaPlayer mediaPlayer;
     private boolean isPlaying = false;
+    @FXML
     private Label songLabel;
+
     private Response sendRequest(Request request) {
         SocketConnection.sendRequest(request);
         return SocketConnection.getResponse();
@@ -86,8 +86,6 @@ public class MainController {
         if (response.isFunctionCalled()) myPlaylistView.getItems().add(songsView.getSelectionModel().getSelectedItem());
     }
 
-
-
     public void logout() {
         Client.setClientId(null);
         try {
@@ -97,13 +95,12 @@ public class MainController {
         } catch (IOException e) { throw new RuntimeException(e); }
     }
 
-    public void selectSong() throws IOException {
+    public void selectSong() {
         if (isPlaying) {
             mediaPlayer.stop();
             isPlaying = false;
         }
         try {
-            songUrl = "";
             //ID to get
             String selectedSong = myPlaylistView.getSelectionModel().getSelectedItem();
             System.out.println(selectedSong);
@@ -113,6 +110,7 @@ public class MainController {
             Song song = SerializationUtils.deserialize(response.getSongData());
 
             File f = new File( id+ ".mp3");
+            songLabel.setText(id+ "");
 
             System.out.println(f.getAbsolutePath());
             if(f.exists()){
@@ -133,13 +131,13 @@ public class MainController {
         }
     }
 
-    public void playSong() throws IOException {
+    public void playSong() {
         selectSong();
         mediaPlayer = new MediaPlayer(media);
         mediaPlayer.play();
         isPlaying = true;
     }
-    public void pauseSong() throws IOException {
+    public void pauseSong() {
         if(isPlaying) {
 //            selectSong();
 //            mediaPlayer = new MediaPlayer(media);
@@ -147,7 +145,7 @@ public class MainController {
             isPlaying = false;
         }
     }
-    public void resetSong() throws IOException {
+    public void resetSong() {
 //        selectSong();
 //        mediaPlayer = new MediaPlayer(media);
         mediaPlayer.seek(Duration.seconds(0));
