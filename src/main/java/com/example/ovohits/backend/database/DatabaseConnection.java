@@ -14,7 +14,7 @@ public class DatabaseConnection {
             connection = DriverManager.getConnection(
                     "jdbc:mysql://localhost/OVO_Hits",
                     "root",
-                    "pass-123");
+                    "1234");
         }
         catch (ClassNotFoundException | SQLException e) { throw new RuntimeException(e); }
         return connection;

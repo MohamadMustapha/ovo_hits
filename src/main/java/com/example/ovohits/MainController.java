@@ -8,16 +8,24 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.apache.commons.lang3.SerializationUtils;
-
+import java.io.File;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MainController {
+
     @FXML
     private Button returnButton;
     @FXML
@@ -26,28 +34,17 @@ public class MainController {
     private ListView<String> myPlaylistView;
     @FXML
     private ListView<String> songsView;
-
+    @FXML
+    private ProgressBar songProgressBar;
+    private String songUrl = "C:\\Users\\Hashem Shibli\\Desktop\\MP3 Files\\AUGHHHH Mega Bass Boosted.mp3";
+    private Media media = new Media(new File(songUrl).toURI().toString());
+    private MediaPlayer mediaPlayer = new MediaPlayer(media);
+    private boolean isPlaying = false;
+    private Label songLabel;
     private Response sendRequest(Request request) {
         SocketConnection.sendRequest(request);
         return SocketConnection.getResponse();
     }
-
-    public void addToMyPlaylist() {
-        String selectedSong = songsView.getSelectionModel().getSelectedItem();
-        if (selectedSong == null) return;
-
-        try {
-            Request request = new Request("@addSavedSong");
-            request.setSavedSongInfo(new ArrayList<>(Arrays.asList(
-                    Integer.parseInt(selectedSong.substring(selectedSong.lastIndexOf(" ") + 1)),
-                    Client.getClientId())));
-            SocketConnection.sendRequest(request);
-        } catch (SQLException e) { throw new RuntimeException(e); }
-
-        Response response = SocketConnection.getResponse();
-        if (response.isFunctionCalled()) myPlaylistView.getItems().add(songsView.getSelectionModel().getSelectedItem());
-    }
-
     public void initialize() {
         try {
             Response response = sendRequest(new Request("@getAllSongs"));
@@ -73,6 +70,23 @@ public class MainController {
             }
         } catch (SQLException e) { throw new RuntimeException(e); }
     }
+    public void addToMyPlaylist() {
+        String selectedSong = songsView.getSelectionModel().getSelectedItem();
+        if (selectedSong == null) return;
+
+        try {
+            Request request = new Request("@addSavedSong");
+            request.setSavedSongInfo(new ArrayList<>(Arrays.asList(
+                    Integer.parseInt(selectedSong.substring(selectedSong.lastIndexOf(" ") + 1)),
+                    Client.getClientId())));
+            SocketConnection.sendRequest(request);
+        } catch (SQLException e) { throw new RuntimeException(e); }
+
+        Response response = SocketConnection.getResponse();
+        if (response.isFunctionCalled()) myPlaylistView.getItems().add(songsView.getSelectionModel().getSelectedItem());
+    }
+
+
 
     public void logout() {
         Client.setClientId(null);
@@ -83,8 +97,61 @@ public class MainController {
         } catch (IOException e) { throw new RuntimeException(e); }
     }
 
-    public void playSong() {
-        // TODO: Send partial audio packets to backend and download/stream the file (ex: YouTube)
+    public void selectSong() throws IOException {
+        if (isPlaying) {
+            mediaPlayer.stop();
+            isPlaying = false;
+        }
+        try {
+            songUrl = "";
+            //ID to get
+            String selectedSong = myPlaylistView.getSelectionModel().getSelectedItem();
+            System.out.println(selectedSong);
+            int id = Integer.parseInt(selectedSong.substring(selectedSong.lastIndexOf(" ") + 1));
+            SocketConnection.sendRequest(new Request(id, "@getSong"));
+            Response response = SocketConnection.getResponse();
+            Song song = SerializationUtils.deserialize(response.getSongData());
+
+            File f = new File( id+ ".mp3");
+
+            System.out.println(f.getAbsolutePath());
+            if(f.exists()){
+                media = new Media(f.toURI().toString());
+                mediaPlayer = new MediaPlayer(media);
+                return;
+            }
+            FileOutputStream fos = new FileOutputStream(f);
+            byte[] data = song.getData().getBinaryStream().readAllBytes();
+            for(byte i: data){
+                fos.write(i);
+            }
+            media = new Media(f.toURI().toString());
+            fos.close();
+
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void playSong() throws IOException {
+        selectSong();
+        mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.play();
+        isPlaying = true;
+    }
+    public void pauseSong() throws IOException {
+        if(isPlaying) {
+//            selectSong();
+//            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.pause();
+            isPlaying = false;
+        }
+    }
+    public void resetSong() throws IOException {
+//        selectSong();
+//        mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.seek(Duration.seconds(0));
+        isPlaying = true;
     }
 
     public void removeFromMyPlaylist() {
