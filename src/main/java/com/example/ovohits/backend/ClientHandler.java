@@ -154,6 +154,9 @@ public class ClientHandler implements Runnable {
         System.out.println(PrintColor.YELLOW + "[Pending]: Adding user to database..." + PrintColor.RESET);
         ArrayList<String> userInfo = request.getUserInfo();
         if (new UserService().getUser(userInfo.get(4)) != null) {
+            Response response = new Response();
+            response.setFunctionCalled(false);
+            sendResponse(response);
             System.out.println(PrintColor.RED + "[Error]:   Username already taken!" + PrintColor.RESET);
             return;
         }
