@@ -33,6 +33,7 @@ public class LandingController {
     }
 
     public void initialize() {
+        if (Client.isThreadAlive()) return;
         SocketConnection.setSocket();
 
         try { SocketConnection.sendRequest(new Request()); }
