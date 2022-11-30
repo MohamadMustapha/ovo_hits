@@ -57,7 +57,7 @@ public class LandingController {
             Response response = SocketConnection.getResponse();
             if (response.isFunctionCalled() && response.isExists()) {
                 Client.setClientId(response.getUserId());
-                FXMLLoader fxmlLoader = new FXMLLoader(LandingController.class.getResource("Main.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Main.fxml"));
                 Stage stage = (Stage) loginButton.getScene().getWindow();
                 stage.setScene(new Scene(fxmlLoader.load()));
             }

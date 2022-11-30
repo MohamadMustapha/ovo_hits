@@ -59,54 +59,24 @@ public class ClientHandler implements Runnable {
             System.out.println(PrintColor.GREEN + "[Success]: Called function: " + "\033[1;34m" + request.getFunction()
                     + PrintColor.RESET);
             switch (request.getFunction()) {
-                case "@addSavedSong" -> {
-                    try { addSavedSong(request); }
-                    catch (Exception e) { throw new RuntimeException(e); }
-                }
-                case "@addSong" -> {
-                    try { addSong(request); }
-                    catch (Exception e) { throw new RuntimeException(e); }
-                }
-                case "@addUser" -> {
-                    try { addUser(request); }
-                    catch (Exception e) { throw new RuntimeException(e); }
-                }
-                case "@deleteSavedSong" -> {
-                    try { deleteSavedSong(request); }
-                    catch (Exception e) { throw new RuntimeException(e); }
-                }
-                case "@exit" -> running = false;
-                case "@getAllSongs" -> {
-                    try { getAllSongs(); }
-                    catch (Exception e) { throw new RuntimeException(e); }
-                }
-                case "@getOnlineUsers" -> {
-                    try { getOnlineUsers(); }
-                    catch (Exception e) { throw new RuntimeException(e); }
-                }
+                case "@addSavedSong" -> addSavedSong(request);
+                case "@addSong" -> addSong(request);
+                case "@addUser" -> addUser(request);
+                case "@deleteSavedSong" -> deleteSavedSong(request);
+                case "@exit" -> exit(request);
+                case "@getAllSongs" -> getAllSongs();
+                case "@getOnlineUsers" -> getOnlineUsers();
                 case "@getSong" -> {
-                    try {
-                        if (request.getUsername().isBlank()) getSong(request);
-                        else getSong(request, request.getUsername());
-                    }
-                    catch (Exception e) { throw new RuntimeException(e); }
+                    if (request.getUsername().isBlank()) getSong(request);
+                    else getSong(request, request.getUsername());
                 }
-                case "@getSavedSongs" -> {
-                    try { getSavedSongs(request); }
-                    catch (Exception e) { throw new RuntimeException(e); }
-                }
+                case "@getSavedSongs" -> getSavedSongs(request);
                 case "@getSongs" -> {
-                    try { getSongs(); }
-                    catch (Exception e) { throw new RuntimeException(e); }
+                    if (request.getModelId() == -1) getSongs();
+                    else getSongs(request.getModelId());
                 }
-                case "@getUser" -> {
-                    try { getUser(request); }
-                    catch (Exception e) { throw new RuntimeException(e); }
-                }
-                case "@login" -> {
-                    try { login(request); }
-                    catch (Exception e) { throw new RuntimeException(e); }
-                }
+                case "@getUser" -> getUser(request);
+                case "@login" -> login(request);
                 case "@playSong" -> playSong();
                 default -> System.out.println(PrintColor.RED + "[Error]:   Request function invalid!"
                         + PrintColor.RESET);
@@ -180,6 +150,11 @@ public class ClientHandler implements Runnable {
         System.out.println(PrintColor.GREEN + "[Success]: Deleted saved song to database!" + PrintColor.RESET);
     }
 
+    public void exit(Request request) {
+        running = false;
+        if (request.getModelId() != -1) Server.deleteClient(request.getModelId());
+    }
+
     public void getAllSongs() {
         System.out.println(PrintColor.YELLOW + "[Pending]: Sending all songs from database..." + PrintColor.RESET);
         ArrayList<byte[]> songDataList = new ArrayList<>(Server.getSongs().stream()
@@ -235,9 +210,18 @@ public class ClientHandler implements Runnable {
         System.out.println(PrintColor.GREEN + "[Success]: Sent songs to client!" + PrintColor.RESET);
     }
 
+    public void getSongs(int userId) {
+        System.out.println(PrintColor.YELLOW + "[Pending]: Sending songs to client..." + PrintColor.RESET);
+        ArrayList<byte[]> songDataList = new ArrayList<>(new SongService().getSongs(userId)
+                .stream().map(SerializationUtils::serialize).toList());
+        sendResponse(new Response(songDataList));
+        System.out.println(PrintColor.GREEN + "[Success]: Sent songs to client!" + PrintColor.RESET);
+    }
+
     public void getUser(Request request) {
         System.out.println(PrintColor.YELLOW + "[Pending]: Sending user to client..." + PrintColor.RESET);
-        User user = new UserService().getUser(request.getModelId());
+        User user = request.getModelId() == -1 ? new UserService().getUser(request.getUsername()) :
+                new UserService().getUser(request.getModelId());
         Response response = new Response(user != null);
         response.setUserData(SerializationUtils.serialize(user));
         sendResponse(response);
