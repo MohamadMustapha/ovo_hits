@@ -109,8 +109,7 @@ public class MainController {
 
         try {
             Request request = new Request("@getUser");
-            request.setUsername(selectedUser.substring(Integer.parseInt(selectedUser.substring(
-                    selectedUser.lastIndexOf(" ") + 1))));
+            request.setUsername(selectedUser.substring(selectedUser.lastIndexOf(" ") + 1));
             Response response = SocketConnection.getResponse();
             if (response.isFunctionCalled()) {
                 User user = SerializationUtils.deserialize(response.getUserData());
