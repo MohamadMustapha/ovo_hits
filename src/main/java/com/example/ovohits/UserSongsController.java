@@ -10,7 +10,7 @@ import javafx.util.Pair;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class UserController {
+public class UserSongsController {
     private Integer userId = null;
     @FXML
     private Button logoutButton;
@@ -21,7 +21,9 @@ public class UserController {
 
     public void initialize() {
         try {
-            Client.sendRequest(new Request(userId, "getSongs"));
+            if (userId == null) return;
+            Client.sendRequest(new Request(userId, "@getSongs"));
+            Client.callRequestFunction(Client.getServerRequest());
             Response response = Client.getResponse();
             ArrayList<Pair<String, Integer>> songList = response.getSongList();
             for (Pair<String, Integer> song : songList)

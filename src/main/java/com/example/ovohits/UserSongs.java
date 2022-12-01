@@ -7,13 +7,13 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class User extends Application {
+public class UserSongs extends Application {
     @Override
     public void start(Stage stage) {
         try {
             Utilities.initializeStage(
                     stage,
-                    new Scene(new FXMLLoader(User.class.getResource("User.fxml")).load()));
+                    new Scene(new FXMLLoader(UserSongs.class.getResource("UserSongs.fxml")).load()));
         } catch (IOException e) { throw new RuntimeException(e); }
     }
 
