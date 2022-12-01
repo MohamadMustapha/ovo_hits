@@ -1,5 +1,6 @@
 package com.example.ovohits;
 
+import com.example.ovohits.backend.database.models.User;
 import com.example.ovohits.backend.Response;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -7,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
+import org.apache.commons.lang3.SerializationUtils;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -56,16 +58,25 @@ public class UsersController {
 
     public void goUser() {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(User.class.getResource("User.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(UserSongs.class.getResource("UserSongs.fxml"));
             Stage stage = (Stage) viewButton.getScene().getWindow();
 
-            String user = usersView.getSelectionModel().getSelectedItem();
-            UserController userController = new UserController();
-            userController.setUserId(Integer.parseInt(user.substring(user.lastIndexOf(" ") + 1)));
+            String selectedUser = usersView.getSelectionModel().getSelectedItem();
+            if (selectedUser == null) return;
+
+            UserSongsController userController = new UserSongsController();
+
+            Request request = new Request("@getUser");
+            request.setUsername(selectedUser.split(" ", 2)[0]);
+            Client.sendRequest(request);
+
+            Response response = Client.getResponse();
+            User user = SerializationUtils.deserialize(response.getUserData());
+            userController.setUserId(user.getId());
             fxmlLoader.setController(userController);
 
             stage.setScene(new Scene(fxmlLoader.load()));
-        } catch (IOException e) { throw new RuntimeException(e); }
+        } catch (IOException | SQLException e) { throw new RuntimeException(e); }
     }
 
     public void logout() {
