@@ -6,7 +6,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: #a49059;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.ovohits.AddSongController">
    <top>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: D4AF37;" BorderPane.alignment="CENTER">
          <children>
             <Label layoutX="182.0" layoutY="32.0" prefHeight="93.0" prefWidth="336.0" text="OVO HITS" textAlignment="CENTER" textFill="WHITE">
                <font>

@@ -1,5 +1,6 @@
 package com.example.ovohits.backend;
 
+import com.example.ovohits.ClientResponse;
 import com.example.ovohits.Request;
 import com.example.ovohits.backend.database.models.SavedSong;
 import com.example.ovohits.backend.database.models.Song;
@@ -7,6 +8,7 @@ import com.example.ovohits.backend.database.models.User;
 import com.example.ovohits.backend.database.services.SavedSongService;
 import com.example.ovohits.backend.database.services.SongService;
 import com.example.ovohits.backend.database.services.UserService;
+import javafx.util.Pair;
 import org.apache.commons.lang3.SerializationUtils;
 
 import javax.sql.rowset.serial.SerialBlob;
@@ -16,6 +18,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class ClientHandler implements Runnable {
     private boolean running = true;
@@ -52,6 +55,23 @@ public class ClientHandler implements Runnable {
         } catch (IOException e) { throw new RuntimeException(e); }
     }
 
+    private ClientResponse getClientResponse() {
+        try {
+            byte[] responseBuffer = new byte[dataInputStream.readInt()];
+            dataInputStream.readFully(responseBuffer);
+            return SerializationUtils.deserialize(responseBuffer);
+        } catch (IOException e) { throw new RuntimeException(e); }
+    }
+
+    private void sendServerRequest(ServerRequest request, Socket socket) {
+        try {
+            byte[] requestData = SerializationUtils.serialize(request);
+            DataOutputStream clientDataOutputStream = new DataOutputStream(socket.getOutputStream());
+            clientDataOutputStream.writeInt(requestData.length);
+            clientDataOutputStream.write(requestData);
+        } catch (IOException e) { throw new RuntimeException(e); }
+    }
+
     public void run() {
         while (running) {
             System.out.println(PrintColor.YELLOW + "[Pending]: Calling function... " + PrintColor.RESET);
@@ -64,17 +84,11 @@ public class ClientHandler implements Runnable {
                 case "@addUser" -> addUser(request);
                 case "@deleteSavedSong" -> deleteSavedSong(request);
                 case "@exit" -> exit(request);
-                case "@getAllSongs" -> getAllSongs();
+                case "@filterSongs" -> filterSongs(request);
                 case "@getOnlineUsers" -> getOnlineUsers();
-                case "@getSong" -> {
-                    if (request.getUsername().isBlank()) getSong(request);
-                    else getSong(request, request.getUsername());
-                }
+                case "@getSong" -> getSong(request);
                 case "@getSavedSongs" -> getSavedSongs(request);
-                case "@getSongs" -> {
-                    if (request.getModelId() == -1) getSongs();
-                    else getSongs(request.getModelId());
-                }
+                case "@getSongs" -> getSongs(request);
                 case "@getUser" -> getUser(request);
                 case "@login" -> login(request);
                 case "@playSong" -> playSong();
@@ -139,7 +153,7 @@ public class ClientHandler implements Runnable {
         ArrayList<String> songInfo = request.getSongInfo();
         songInfo.set(1, Integer.toString(new UserService().getUser(userInfo.get(4)).getId()));
         request.setSongInfo(songInfo);
-        Server.addClient(new UserService().getUser(userInfo.get(4)).getId(), socket.getLocalAddress(), port);
+        Server.addClient(new UserService().getUser(userInfo.get(4)).getId(), socket);
         System.out.println(PrintColor.GREEN + "[Success]: Added user to database!" + PrintColor.RESET);
         sendResponse(new Response());
         addSong(request);
@@ -156,12 +170,20 @@ public class ClientHandler implements Runnable {
         if (request.getModelId() != -1) Server.deleteClient(request.getModelId());
     }
 
-    public void getAllSongs() {
-        System.out.println(PrintColor.YELLOW + "[Pending]: Sending all songs from database..." + PrintColor.RESET);
-        ArrayList<byte[]> songDataList = new ArrayList<>(Server.getSongs().stream()
-                .map(SerializationUtils::serialize).toList());
-        sendResponse(new Response(songDataList));
-        System.out.println(PrintColor.GREEN + "[SUCCESS]: Sent all songs from database!" + PrintColor.RESET);
+    public void filterSongs(Request request) {
+        System.out.println(PrintColor.YELLOW + "[Pending]: Sending filtered songs from database..." + PrintColor.RESET);
+        User user = new UserService().getUser(request.getUsername());
+        if (user == null) {
+            Response response = new Response();
+            response.setFunctionCalled(false);
+            sendResponse(response);
+            System.out.println(PrintColor.RED + "[Error]:   User not found!" + PrintColor.RESET);
+            return;
+        }
+        ArrayList<Pair<String, Integer>> songList = new ArrayList<>(new SongService().getSongs(user.getId()).stream()
+                .map(song -> new Pair<>(song.getName(), song.getId())).toList());
+        sendResponse(new Response(songList));
+        System.out.println(PrintColor.GREEN + "[SUCCESS]: Sent Filtered songs from database!" + PrintColor.RESET);
     }
 
     public void getOnlineUsers() {
@@ -174,48 +196,74 @@ public class ClientHandler implements Runnable {
         System.out.println(PrintColor.GREEN + "[SUCCESS]: Sent online users from database!" + PrintColor.RESET);
     }
 
-    public void getSong(Request request) {
-        System.out.println(PrintColor.YELLOW + "[Pending]: Sending song to client..." + PrintColor.RESET);
-        Song song = new SongService().getSong(request.getModelId());
-        Response response = new Response(song != null);
-        response.setSongData(SerializationUtils.serialize(song));
-        sendResponse(response);
-        System.out.println(PrintColor.GREEN + "[Success]: Sent song to client!" + PrintColor.RESET);
-    }
-
-    public void getSong(Request request, String username) {
-        System.out.println(PrintColor.YELLOW + "[Pending]: Sending song to client..." + PrintColor.RESET);
-        Song song = new SongService().getSongs(new UserService().getUser(username).getId()).stream()
-                .filter(song_ -> song_.getId() == request.getModelId()).findFirst().orElse(null);
-        Response response = new Response(song != null);
-        response.setSongData(SerializationUtils.serialize(song));
-        sendResponse(response);
-        System.out.println(PrintColor.GREEN + "[Success]: Sent song to client!" + PrintColor.RESET);
-    }
-
     public void getSavedSongs(Request request) {
         System.out.println(PrintColor.YELLOW + "[Pending]: Sending saved songs to client..." + PrintColor.RESET);
-        ArrayList<byte[]> savedSongDataList = new ArrayList<>(new SavedSongService()
-                .getSavedSongs(request.getModelId()).stream().map(SerializationUtils::serialize).toList());
+        ArrayList<Pair<String, Integer>> savedSongList = new ArrayList<>(new SavedSongService()
+                .getSavedSongs(request.getModelId()).stream().map(
+                        savedSong -> new Pair<>(
+                                new SongService().getSong(savedSong.getSongId()).getName(),
+                                new UserService().getUser(savedSong.getUserId()).getId())
+                ).toList());
         Response response = new Response();
-        response.setSavedSongDataList(savedSongDataList);
+        response.setSavedSongList(savedSongList);
         sendResponse(response);
         System.out.println(PrintColor.GREEN + "[Success]: Sent saved songs to client!" + PrintColor.RESET);
     }
 
-    public void getSongs() {
-        System.out.println(PrintColor.YELLOW + "[Pending]: Sending songs to client..." + PrintColor.RESET);
-        ArrayList<byte[]> songDataList = new ArrayList<>(new SongService().getSongs()
-                .stream().map(SerializationUtils::serialize).toList());
-        sendResponse(new Response(songDataList));
-        System.out.println(PrintColor.GREEN + "[Success]: Sent songs to client!" + PrintColor.RESET);
+    public void getSong(Request request) {
+        System.out.println(PrintColor.YELLOW + "[Pending]: Sending song to client..." + PrintColor.RESET);
+        Response response = new Response(false);
+        for (Map.Entry<Integer, Socket> client : Server.getClients().entrySet()) {
+            if (client.getKey() == -1) {
+                Song song = request.getUsername().isBlank() ?
+                        new SongService().getSong(request.getModelId()) :
+                        new SongService().getSongs(new UserService().getUser(request.getUsername()).getId()).stream()
+                                .filter(song_ -> song_.getId() == request.getModelId()).findFirst().orElse(null);
+                if (song != null) {
+                    response.setExists(true);
+                    response.setSongData(SerializationUtils.serialize(song));
+                    break;
+                }
+            }
+            else {
+                sendServerRequest(
+                        new ServerRequest(request.getUsername().isBlank() ?
+                                new UserService().getUser(request.getUsername()).getId() :
+                                request.getModelId(),
+                                "@getSong"),
+                        client.getValue());
+                ClientResponse clientResponse = getClientResponse();
+                Song song = SerializationUtils.deserialize(clientResponse.getSongData());
+                if (song != null) {
+                    response.setExists(true);
+                    response.setSongData(clientResponse.getSongData());
+                    break;
+                }
+            }
+        }
+        sendResponse(response);
+        System.out.println(PrintColor.GREEN + "[Success]: Sent song to client!" + PrintColor.RESET);
     }
 
-    public void getSongs(int userId) {
+    public void getSongs(Request request) {
         System.out.println(PrintColor.YELLOW + "[Pending]: Sending songs to client..." + PrintColor.RESET);
-        ArrayList<byte[]> songDataList = new ArrayList<>(new SongService().getSongs(userId)
-                .stream().map(SerializationUtils::serialize).toList());
-        sendResponse(new Response(songDataList));
+        ArrayList<Pair<String, Integer>> songList = new ArrayList<>();
+        for (Map.Entry<Integer, Socket> client : Server.getClients().entrySet()) {
+            if (client.getKey() == -1)
+                songList.addAll(request.getModelId() == -1 ?
+                        new SongService().getSongs().stream().map(song ->
+                                new Pair<>(song.getName(), song.getId())).toList() :
+                        new SongService().getSongs(request.getModelId()).stream().map(song ->
+                                new Pair<>(song.getName(), song.getId())).toList());
+            else {
+                sendServerRequest(
+                        new ServerRequest("@getSongs"),
+                        client.getValue());
+                ClientResponse clientResponse = getClientResponse();
+                songList.addAll(clientResponse.getSongList());
+            }
+        }
+        sendResponse(new Response(songList));
         System.out.println(PrintColor.GREEN + "[Success]: Sent songs to client!" + PrintColor.RESET);
     }
 
@@ -237,7 +285,7 @@ public class ClientHandler implements Runnable {
         response.setUserId(user != null ? user.getId() : -1);
         sendResponse(response);
         if (response.isExists()) {
-            Server.addClient(response.getUserId(), socket.getLocalAddress(), port);
+            Server.addClient(response.getUserId(), socket);
             System.out.println(PrintColor.GREEN + "[Success]: Login verification successful!" + PrintColor.RESET);
         }
         else System.out.println(PrintColor.RED + "[Error]:   User doesn't exist!" + PrintColor.RESET);

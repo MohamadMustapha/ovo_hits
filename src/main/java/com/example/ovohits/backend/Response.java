@@ -1,5 +1,7 @@
 package com.example.ovohits.backend;
 
+import javafx.util.Pair;
+
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -8,9 +10,9 @@ import java.util.Arrays;
 public class Response implements Serializable {
     @Serial
     private static final long serialVersionUID = 4806366312215947674L;
-    private ArrayList<byte[]> savedSongDataList = new ArrayList<>();
-    private ArrayList<byte[]> songDataList = new ArrayList<>();
     private ArrayList<String> onlineUsernameList = new ArrayList<>();
+    private ArrayList<Pair<String, Integer>> savedSongList = new ArrayList<>();
+    private ArrayList<Pair<String, Integer>> songList = new ArrayList<>();
     private boolean exists = false;
     private boolean functionCalled = true;
     private byte[] songData = new byte[0];
@@ -20,21 +22,21 @@ public class Response implements Serializable {
 
     public Response() { }
 
-    public Response(ArrayList<byte[]> songDataList) { this.songDataList = songDataList; }
+    public Response(ArrayList<Pair<String, Integer>> songList) { this.songList = songList; }
 
     public Response(boolean exists) { this.exists = exists; }
 
     public Response(int port) { this.port = port; }
 
-    public ArrayList<byte[]> getSavedSongDataList() { return savedSongDataList; }
+    public ArrayList<Pair<String, Integer>> getSavedSongList() { return savedSongList; }
 
-    public void setSavedSongDataList(ArrayList<byte[]> savedSongDataList) {
-        this.savedSongDataList = savedSongDataList;
+    public void setSavedSongList(ArrayList<Pair<String, Integer>> savedSongList) {
+        this.savedSongList = savedSongList;
     }
 
-    public ArrayList<byte[]> getSongDataList() { return songDataList; }
+    public ArrayList<Pair<String, Integer>> getSongList() { return songList; }
 
-    public void setSongDataList(ArrayList<byte[]> songDataList) { this.songDataList = songDataList; }
+    public void setSongList(ArrayList<Pair<String, Integer>> songList) { this.songList = songList; }
 
     public ArrayList<String> getOnlineUsernameList() { return onlineUsernameList; }
 
@@ -69,8 +71,9 @@ public class Response implements Serializable {
     @Override
     public String toString() {
         return "Request [" +
-                "savedSongDataList=" + savedSongDataList.toString() + ", " +
-                "songDataList=" + songDataList.toString() + ", " +
+                "onlineUsernameList=" + onlineUsernameList.toString() + ", " +
+                "savedSongList=" + savedSongList.toString() + ", " +
+                "songDataList=" + songList.toString() + ", " +
                 "exists=" + exists + ", " +
                 "functionCalled=" + functionCalled + ", " +
                 "songData=" + Arrays.toString(songData) + ", " +
