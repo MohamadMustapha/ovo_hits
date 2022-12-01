@@ -13,11 +13,11 @@ public class Server {
     private static final HashMap<Integer, Socket> clients = new HashMap<>();
     private static final Scanner scan = new Scanner(System.in);
 
-    public static void addClient(Integer userId, Socket socket) { clients.put(userId, socket); }
+    public static ArrayList<Integer> getOnlineUsers() { return new ArrayList<>(clients.keySet()); }
 
     public static HashMap<Integer, Socket> getClients() { return clients; }
 
-    public static ArrayList<Integer> getOnlineUsers() { return new ArrayList<>(clients.keySet()); }
+    public static void addClient(Integer userId, Socket socket) { clients.put(userId, socket); }
 
     public static void deleteClient(Integer userId) { clients.remove(userId); }
 

@@ -11,7 +11,7 @@ public class Response implements Serializable {
     @Serial
     private static final long serialVersionUID = 4806366312215947674L;
     private ArrayList<String> onlineUsernameList = new ArrayList<>();
-    private ArrayList<Pair<String, Integer>> savedSongList = new ArrayList<>();
+    private ArrayList<Pair<Integer, Integer>> savedSongList = new ArrayList<>();
     private ArrayList<Pair<String, Integer>> songList = new ArrayList<>();
     private boolean exists = false;
     private boolean functionCalled = true;
@@ -28,9 +28,9 @@ public class Response implements Serializable {
 
     public Response(int port) { this.port = port; }
 
-    public ArrayList<Pair<String, Integer>> getSavedSongList() { return savedSongList; }
+    public ArrayList<Pair<Integer, Integer>> getSavedSongList() { return savedSongList; }
 
-    public void setSavedSongList(ArrayList<Pair<String, Integer>> savedSongList) {
+    public void setSavedSongList(ArrayList<Pair<Integer, Integer>> savedSongList) {
         this.savedSongList = savedSongList;
     }
 

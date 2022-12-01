@@ -7,7 +7,7 @@
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: D4AF37;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.ovohits.UsersController">
    <center>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <ListView fx:id="usersView" layoutX="15.0" layoutY="-10.0" prefHeight="400.0" prefWidth="670.0" style="-fx-border-color: FFD700; -fx-background-radius: 5px; -fx-border-radius: 5px;" />
+         <ListView fx:id="usersView" layoutX="15.0" layoutY="-10.0" prefHeight="400.0" prefWidth="670.0" style="-fx-border-color: FFD700; -fx-background-radius: 5px; -fx-border-radius: 5px; -fx-fixed-cell-size: 50px;" />
       </AnchorPane>
    </center>
    <top>

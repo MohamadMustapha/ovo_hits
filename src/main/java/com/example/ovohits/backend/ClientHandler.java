@@ -188,8 +188,9 @@ public class ClientHandler implements Runnable {
 
     public void getOnlineUsers() {
         System.out.println(PrintColor.YELLOW + "[Pending]: Sending online users from database..." + PrintColor.RESET);
-        ArrayList<String> onlineUsernameList = new ArrayList<>(Server.getOnlineUsers().stream().map(integer ->
-                new UserService().getUser(integer).getUsername()).toList());
+        ArrayList<String> onlineUsernameList = new ArrayList<>(Server.getOnlineUsers().stream()
+                .filter(userId -> userId != -1).map(userId ->
+                        new UserService().getUser(userId).getUsername()).toList());
         Response response = new Response();
         response.setOnlineUsernameList(onlineUsernameList);
         sendResponse(response);
@@ -198,12 +199,11 @@ public class ClientHandler implements Runnable {
 
     public void getSavedSongs(Request request) {
         System.out.println(PrintColor.YELLOW + "[Pending]: Sending saved songs to client..." + PrintColor.RESET);
-        ArrayList<Pair<String, Integer>> savedSongList = new ArrayList<>(new SavedSongService()
+        ArrayList<Pair<Integer, Integer>> savedSongList = new ArrayList<>(new SavedSongService()
                 .getSavedSongs(request.getModelId()).stream().map(
                         savedSong -> new Pair<>(
-                                new SongService().getSong(savedSong.getSongId()).getName(),
-                                new UserService().getUser(savedSong.getUserId()).getId())
-                ).toList());
+                                savedSong.getSongId(),
+                                savedSong.getUserId())).toList());
         Response response = new Response();
         response.setSavedSongList(savedSongList);
         sendResponse(response);

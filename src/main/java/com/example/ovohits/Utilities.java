@@ -27,7 +27,7 @@ public class Utilities {
             Client.sendRequest(request);
         } catch (SQLException e) { throw new RuntimeException(e); }
 
-        listView.getItems().remove(index);
+        listView.getItems().remove(listView.getSelectionModel().getSelectedIndex());
     }
 
     public static void goPage(Button button, FXMLLoader fxmlLoader) {
