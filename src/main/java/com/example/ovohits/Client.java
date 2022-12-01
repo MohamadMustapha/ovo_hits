@@ -42,7 +42,7 @@ public class Client {
                 + serverRequest.getFunction() + PrintColor.RESET);
         switch (serverRequest.getFunction()) {
             case "@getSong" -> getSong(serverRequest);
-            case "@getSongs" -> getSongs();
+            case "@getSongs" -> getSongs(serverRequest);
             default -> System.out.println(PrintColor.RED + "[Error]:   Request function invalid!"
                     + PrintColor.RESET);
         }
@@ -58,10 +58,14 @@ public class Client {
         System.out.println(PrintColor.GREEN + "[Success]: Sent song to server!" + PrintColor.RESET);
     }
 
-    public static void getSongs() {
+    public static void getSongs(ServerRequest serverRequest) {
         System.out.println(PrintColor.YELLOW + "[Pending]: Sending songs to server..." + PrintColor.RESET);
-        sendClientResponse(new ClientResponse(new ArrayList<>(new SongService().getSongs().stream().map(song ->
-                new Pair<>(song.getName(), song.getId())).toList())));
+        sendClientResponse(new ClientResponse(new ArrayList<>(
+                serverRequest.getModelId() == -1 ?
+                new SongService().getSongs().stream().map(song ->
+                        new Pair<>(song.getName(), song.getId())).toList() :
+                new SongService().getSongs(serverRequest.getModelId()).stream().map(song ->
+                        new Pair<>(song.getName(), song.getId())).toList())));
         System.out.println(PrintColor.GREEN + "[Success]: Sent songs to server!" + PrintColor.RESET);
     }
 
