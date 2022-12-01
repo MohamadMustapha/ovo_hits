@@ -17,9 +17,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class Client {
+    private static boolean running = false;
     private static Integer clientId = null;
     private static Integer port = 6969;
     private static Socket socket = null;
+
+    public static boolean isRunning() { return running; }
+
+    public static void setRunning(boolean running) { Client.running = running; }
 
     public static Integer getClientId() { return clientId; }
 
@@ -28,7 +33,7 @@ public class Client {
     public static void setPort(int port) { Client.port = port; }
 
     public static void setSocket() {
-        try { Client.socket = new Socket("localhost", port); }
+        try { Client.socket = new Socket("10.169.29.218", port); }
         catch (IOException e) { throw new RuntimeException(e); }
     }
 
@@ -99,6 +104,7 @@ public class Client {
     }
 
     public static void terminateThread() {
+        if (!isRunning()) return;
         if (getClientId() == null)
             try { sendRequest(new Request("@exit")); }
             catch (SQLException e) { throw new RuntimeException(e); }
@@ -111,6 +117,7 @@ public class Client {
         setSocket();
         setPort(getResponse().getPort());
         setSocket();
+        setRunning(true);
         Application.launch(Landing.class, args);
     }
 }
