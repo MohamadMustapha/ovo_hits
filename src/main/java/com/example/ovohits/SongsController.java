@@ -25,8 +25,17 @@ public class SongsController {
         try {
             Client.sendRequest(new Request("@getSongs"));
             Client.callRequestFunction(Client.getServerRequest());
-            Response response = Client.getResponse();
-            ArrayList<Pair<String, Integer>> songList = response.getSongList();
+            Response songsResponse = Client.getResponse();
+            ArrayList<Pair<String, Integer>> songList = songsResponse.getSongList();
+
+            Client.sendRequest(new Request(
+                    Client.getClientId(),
+                    "@getSavedSongs"));
+            Response savedSongResponse = Client.getResponse();
+            ArrayList<Integer> savedSongIdList = new ArrayList<>(savedSongResponse.getSavedSongList()
+                    .stream().map(Pair::getKey).toList());
+            songList = new ArrayList<>(songList.stream().filter(song ->
+                    !savedSongIdList.contains(song.getValue())).toList());
             for (Pair<String, Integer> song : songList)
                 songsView.getItems().add(song.getKey() + ".mp3     |     id: " + song.getValue());
         } catch (SQLException e) { throw new RuntimeException(e); }

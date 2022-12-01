@@ -33,7 +33,7 @@ public class Client {
     public static void setPort(int port) { Client.port = port; }
 
     public static void setSocket() {
-        try { Client.socket = new Socket("10.169.29.218", port); }
+        try { Client.socket = new Socket("localhost", port); }
         catch (IOException e) { throw new RuntimeException(e); }
     }
 
@@ -75,14 +75,12 @@ public class Client {
     }
 
     public static void sendClientResponse(ClientResponse clientResponse) {
-        System.out.println("TESTING1");
         try {
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             byte[] clientResponseData = SerializationUtils.serialize(clientResponse);
             dataOutputStream.writeInt(clientResponseData.length);
             dataOutputStream.write(clientResponseData);
         } catch (IOException e) { throw new RuntimeException(e); }
-        System.out.println("TESTING2");
     }
 
     public static Response getResponse() {
