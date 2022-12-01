@@ -256,8 +256,9 @@ public class ClientHandler implements Runnable {
                         new SongService().getSongs(request.getModelId()).stream().map(song ->
                                 new Pair<>(song.getName(), song.getId())).toList());
             else {
-                sendServerRequest(
-                        new ServerRequest("@getSongs"),
+                sendServerRequest(request.getModelId() == -1 ?
+                        new ServerRequest("@getSongs") :
+                        new ServerRequest(request.getModelId(), "@getSongs"),
                         client.getValue());
                 ClientResponse clientResponse = getClientResponse();
                 songList.addAll(clientResponse.getSongList());
