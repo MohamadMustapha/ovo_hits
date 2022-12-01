@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="700.0" style="-fx-background-color: D4AF37;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.ovohits.SongsController">
+   <center>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <ListView fx:id="songsView" layoutX="15.0" layoutY="-10.0" prefHeight="400.0" prefWidth="670.0" style="-fx-border-color: FFD700; -fx-background-radius: 5px; -fx-border-radius: 5px;" />
+      </AnchorPane>
+   </center>
+   <top>
+      <AnchorPane prefHeight="100.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <Label layoutX="14.0" layoutY="25.0" text="Songs" textFill="WHITE">
+            <font>
+               <Font name="JetBrains Mono ExtraBold" size="40.0" />
+            </font>
+         </Label>
+         <Button fx:id="libraryButton" layoutX="464.0" layoutY="50.0" mnemonicParsing="false" onAction="#goLibrary" prefHeight="30.0" prefWidth="70.0" style="-fx-background-color: ffffff; -fx-border-color: FFD700; -fx-background-radius: 5px; -fx-border-radius: 5px;" text="Library">
+            <font>
+               <Font name="JetBrains Mono Regular" size="12.0" />
+            </font>
+         </Button>
+         <Button fx:id="uploadButton" layoutX="540.0" layoutY="50.0" mnemonicParsing="false" onAction="#goAddSong" prefHeight="30.0" prefWidth="70.0" style="-fx-background-color: ffffff; -fx-border-color: FFD700; -fx-background-radius: 5px; -fx-border-radius: 5px;" text="Upload">
+            <font>
+               <Font name="JetBrains Mono Regular" size="12.0" />
+            </font>
+         </Button>
+         <Button fx:id="usersButton" layoutX="616.0" layoutY="50.0" mnemonicParsing="false" onAction="#goUsers" prefHeight="30.0" prefWidth="70.0" style="-fx-background-color: ffffff; -fx-border-color: FFD700; -fx-background-radius: 5px; -fx-border-radius: 5px;" text="Users">
+            <font>
+               <Font name="JetBrains Mono Regular" size="12.0" />
+            </font>
+         </Button>
+         <Button layoutX="388.0" layoutY="50.0" mnemonicParsing="false" onAction="#addToLibrary" prefHeight="30.0" prefWidth="70.0" style="-fx-background-color: ffffff; -fx-border-color: FFD700; -fx-background-radius: 5px; -fx-border-radius: 5px;" text="Add">
+            <font>
+               <Font name="JetBrains Mono Regular" size="12.0" />
+            </font>
+         </Button>
+         <Button fx:id="logoutButton" layoutX="312.0" layoutY="50.0" mnemonicParsing="false" onAction="#logout" prefHeight="30.0" prefWidth="70.0" style="-fx-background-color: ffffff; -fx-border-color: FFD700; -fx-background-radius: 5px; -fx-border-radius: 5px;" text="Logout">
+            <font>
+               <Font name="JetBrains Mono Regular" size="12.0" />
+            </font>
+         </Button>
+      </AnchorPane>
+   </top>
+</BorderPane>

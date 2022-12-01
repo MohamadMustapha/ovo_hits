@@ -9,6 +9,7 @@ public class DatabaseConnection {
 
     public static Connection getConnection() {
         if (connection != null) return connection;
+        
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             connection = DriverManager.getConnection(
@@ -17,6 +18,7 @@ public class DatabaseConnection {
                     "pass-123");
         }
         catch (ClassNotFoundException | SQLException e) { throw new RuntimeException(e); }
+
         return connection;
     }
 }

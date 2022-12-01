@@ -30,6 +30,7 @@ public class Request implements Serializable {
         this.songData = songData;
         this.function = "@addSong";
     }
+
     public Request(ArrayList<String> songInfo, ArrayList<String> userInfo, SerialBlob songData) throws SQLException {
         this.songInfo = songInfo;
         this.userInfo = userInfo;

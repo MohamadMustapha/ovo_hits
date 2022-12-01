@@ -3,13 +3,10 @@ package com.example.ovohits;
 import com.example.ovohits.backend.Response;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,23 +22,9 @@ public class LandingController {
     private TextField usernameField;
 
     public void goRegister() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(Register.class.getResource("Register.fxml"));
-            Stage stage = (Stage) registerButton.getScene().getWindow();
-            stage.setScene(new Scene(fxmlLoader.load()));
-        } catch (IOException e) { throw new RuntimeException(e); }
-    }
-
-    public void initialize() {
-        if (Client.isThreadAlive()) return;
-        SocketConnection.setSocket();
-
-        try { SocketConnection.sendRequest(new Request()); }
-        catch (SQLException e) { throw new RuntimeException(e); }
-
-        SocketConnection.setPort(SocketConnection.getResponse().getPort());
-        SocketConnection.setSocket();
-        Client.setThreadAlive(true);
+        Utilities.goPage(
+                registerButton,
+                new FXMLLoader(Landing.class.getResource("Register.fxml")));
     }
 
     public void login() {
@@ -52,15 +35,15 @@ public class LandingController {
             ArrayList<String> loginInfo = new ArrayList<>(Arrays.asList(
                     usernameField.getText(),
                     passwordField.getText()));
-            SocketConnection.sendRequest(new Request(loginInfo));
+            Client.sendRequest(new Request(loginInfo));
+        } catch (SQLException e) { throw new RuntimeException(e); }
 
-            Response response = SocketConnection.getResponse();
-            if (response.isFunctionCalled() && response.isExists()) {
-                Client.setClientId(response.getUserId());
-                FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Main.fxml"));
-                Stage stage = (Stage) loginButton.getScene().getWindow();
-                stage.setScene(new Scene(fxmlLoader.load()));
-            }
-        } catch (IOException | SQLException e) { throw new RuntimeException(e); }
+        Response response = Client.getResponse();
+        if (response.isFunctionCalled() && response.isExists()) {
+            Client.setClientId(response.getUserId());
+            Utilities.goPage(
+                    loginButton,
+                    new FXMLLoader(Songs.class.getResource("Songs.fxml")));
+        }
     }
 }

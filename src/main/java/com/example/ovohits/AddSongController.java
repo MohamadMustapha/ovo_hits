@@ -36,7 +36,7 @@ public class AddSongController {
             ArrayList<String> songInfo = new ArrayList<>(Arrays.asList(
                     songNameInput.getText(),
                     Integer.toString(Client.getClientId())));
-            SocketConnection.sendRequest(new Request(
+            Client.sendRequest(new Request(
                     songInfo,
                     new SerialBlob(songData)));
         } catch (IOException | SQLException e) { throw new RuntimeException(e); }
@@ -46,19 +46,11 @@ public class AddSongController {
 
     public void goMain() {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Main.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(Songs.class.getResource("Songs.fxml"));
             Stage stage = (Stage) returnButton.getScene().getWindow();
             stage.setScene(new Scene(fxmlLoader.load()));
         } catch (IOException e) { throw new RuntimeException(e); }
     }
 
-    public void uploadSong() {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("MP3 Files", "*.mp3"));
-        songFile = fileChooser.showOpenDialog(null);
-        if (songFile != null) {
-            if (listView.getItems().isEmpty()) listView.getItems().add(songFile.getName());
-            else listView.getItems().set(0, songFile.getName());
-        }
-    }
+    public void uploadSong() { songFile = Utilities.uploadSong(listView); }
 }

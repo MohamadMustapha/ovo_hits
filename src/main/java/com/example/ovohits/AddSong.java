@@ -16,7 +16,7 @@ public class AddSong extends Application {
             stage.setTitle("OVO Hits");
             stage.setScene(scene);
             stage.show();
-            stage.setOnCloseRequest(event -> SocketConnection.terminateThread());
+            stage.setOnCloseRequest(event -> Client.terminateThread());
         } catch (IOException e) { throw new RuntimeException(e); }
     }
 

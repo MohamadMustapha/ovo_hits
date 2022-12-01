@@ -11,12 +11,9 @@ public class Register extends Application {
     @Override
     public void start(Stage stage) {
         try {
-            FXMLLoader fxmlLoader = new FXMLLoader(AddSong.class.getResource("Register.fxml"));
-            Scene scene = new Scene(fxmlLoader.load());
-            stage.setTitle("OVO Hits");
-            stage.setScene(scene);
-            stage.show();
-            stage.setOnCloseRequest(event -> SocketConnection.terminateThread());
+            Utilities.initializeStage(
+                    stage,
+                    new Scene(new FXMLLoader(Register.class.getResource("Register.fxml")).load()));
         } catch (IOException e) { throw new RuntimeException(e); }
     }
 
