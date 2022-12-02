@@ -24,7 +24,6 @@ public class SongsController {
     public void initialize() {
         try {
             Client.sendRequest(new Request("@getSongs"));
-            Client.callRequestFunction(Client.getServerRequest());
             Response songsResponse = Client.getResponse();
             ArrayList<Pair<String, Integer>> songList = songsResponse.getSongList();
 

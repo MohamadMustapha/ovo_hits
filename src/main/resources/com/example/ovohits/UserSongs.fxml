@@ -12,7 +12,7 @@
    </center>
    <top>
       <AnchorPane prefHeight="100.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-         <Label layoutX="14.0" layoutY="25.0" text="User" textFill="WHITE">
+         <Label fx:id="userLabel" layoutX="14.0" layoutY="25.0" text="User's Songs" textFill="WHITE">
             <font>
                <Font name="JetBrains Mono ExtraBold" size="40.0" />
             </font>

@@ -4,6 +4,7 @@ import javafx.util.Pair;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -15,6 +16,7 @@ public class Response implements Serializable {
     private ArrayList<Pair<String, Integer>> songList = new ArrayList<>();
     private boolean exists = false;
     private boolean functionCalled = true;
+    private byte[] socketData = new byte[0];
     private byte[] songData = new byte[0];
     private byte[] userData = new byte[0];
     private int port = -1;
@@ -51,6 +53,10 @@ public class Response implements Serializable {
     public boolean isFunctionCalled() { return functionCalled; }
 
     public void setFunctionCalled(boolean functionCalled) { this.functionCalled = functionCalled; }
+
+    public byte[] getSocketData() { return socketData; }
+
+    public void setSocketData(byte[] socketData) { this.socketData = socketData; }
 
     public byte[] getSongData() { return songData; }
 

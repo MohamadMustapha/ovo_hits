@@ -3,8 +3,10 @@ package com.example.ovohits;
 import javax.sql.rowset.serial.SerialBlob;
 import java.io.Serial;
 import java.io.Serializable;
+import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Request implements Serializable {
     @Serial
@@ -15,8 +17,8 @@ public class Request implements Serializable {
     private ArrayList<String> userInfo = new ArrayList<>();
     private int modelId = -1;
     private SerialBlob songData = new SerialBlob(new byte[0]);
-    private String username = "";
     private String function = "";
+    private String username = "";
 
     public Request() throws SQLException { }
 
@@ -69,13 +71,13 @@ public class Request implements Serializable {
 
     public void setSongData(SerialBlob songData) { this.songData = songData; }
 
-    public String getUsername() { return username; }
-
-    public void setUsername(String username) { this.username = username; }
-
     public String getFunction() { return function; }
 
     public void setFunction(String function) { this.function = function; }
+
+    public String getUsername() { return username; }
+
+    public void setUsername(String username) { this.username = username; }
 
     @Override
     public String toString() {
@@ -86,6 +88,7 @@ public class Request implements Serializable {
                 "userInfo=" + userInfo.toString() + ", " +
                 "songData=" + songData + ", " +
                 "modelId=" + modelId + ", " +
-                "function" + function + "]";
+                "function" + function + ", " +
+                "username" + username + "]";
     }
 }
