@@ -20,17 +20,17 @@
                </font>
             </Label>
             <ListView fx:id="listView" layoutX="190.0" layoutY="202.0" prefHeight="150.0" prefWidth="320.0" style="-fx-border-color: #FFD700; -fx-background-radius: 5px; -fx-border-radius: 5px;" />
-            <Button layoutX="364.0" layoutY="373.0" mnemonicParsing="false" onAction="#uploadSong" prefHeight="50.0" prefWidth="125.0" style="-fx-background-color: white; -fx-border-color: #FFD700; -fx-background-radius: 5px; -fx-border-radius: 5px;" text="Upload">
+            <Button layoutX="430.0" layoutY="373.0" mnemonicParsing="false" onAction="#uploadSong" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: white; -fx-border-color: #FFD700; -fx-background-radius: 5px; -fx-border-radius: 5px;" text="Upload">
                <font>
-                  <Font name="JetBrains Mono ExtraBold" size="18.0" />
+                  <Font name="JetBrains Mono Regular" size="14.0" />
                </font></Button>
-            <Button fx:id="returnButton" layoutX="14.0" layoutY="447.0" mnemonicParsing="false" onAction="#goMain" style="-fx-background-color: white; -fx-border-color: #FFD700; -fx-background-radius: 5px; -fx-border-radius: 5px;" text="Return">
+            <Button fx:id="returnButton" layoutX="14.0" layoutY="456.0" mnemonicParsing="false" onAction="#goMain" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: white; -fx-border-color: #FFD700; -fx-background-radius: 5px; -fx-border-radius: 5px;" text="Return">
                <font>
-                  <Font name="JetBrains Mono ExtraBold" size="18.0" />
+                  <Font name="JetBrains Mono Regular" size="14.0" />
                </font></Button>
-            <Button layoutX="211.0" layoutY="373.0" mnemonicParsing="false" onAction="#addSong" prefHeight="50.0" prefWidth="125.0" style="-fx-background-color: #ffffff; -fx-border-color: #FFD700; -fx-background-radius: 5px; -fx-border-radius: 5px;" text="Add">
+            <Button layoutX="192.0" layoutY="373.0" mnemonicParsing="false" onAction="#addSong" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #ffffff; -fx-border-color: #FFD700; -fx-background-radius: 5px; -fx-border-radius: 5px;" text="Add">
                <font>
-                  <Font name="JetBrains Mono ExtraBold" size="18.0" />
+                  <Font name="JetBrains Mono Regular" size="14.0" />
                </font></Button>
          </children></AnchorPane>
    </top>

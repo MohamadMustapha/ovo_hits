@@ -1,6 +1,7 @@
 package com.example.ovohits.backend;
 
 public enum PrintColor {
+    BLUE("\033[0;34m"),
     GREEN("\033[1;32m"),
     PURPLE("\033[1;35m"),
     RED("\033[1;31m"),

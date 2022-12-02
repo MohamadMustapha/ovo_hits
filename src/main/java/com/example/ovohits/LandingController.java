@@ -41,6 +41,7 @@ public class LandingController {
         Response response = Client.getResponse();
         if (response.isFunctionCalled() && response.isExists()) {
             Client.setClientId(response.getUserId());
+            Client.initializeServerHandler();
             Utilities.goPage(
                     loginButton,
                     new FXMLLoader(Songs.class.getResource("Songs.fxml")));

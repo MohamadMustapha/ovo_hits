@@ -11,6 +11,7 @@ module com.example.ovohits {
     requires org.controlsfx.controls;
     requires org.kordamp.bootstrapfx.core;
     requires javafx.media;
+    requires org.jetbrains.annotations;
 
 
     exports com.example.ovohits;

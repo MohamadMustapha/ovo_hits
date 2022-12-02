@@ -1,25 +1,23 @@
 package com.example.ovohits;
 
-import com.example.ovohits.backend.PrintColor;
 import com.example.ovohits.backend.Response;
-import com.example.ovohits.backend.ServerRequest;
-import com.example.ovohits.backend.database.models.Song;
-import com.example.ovohits.backend.database.services.SongService;
 import javafx.application.Application;
-import javafx.util.Pair;
 import org.apache.commons.lang3.SerializationUtils;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 public class Client {
     private static boolean running = false;
+    private static DataInputStream dataInputStream = null;
+    private static DataOutputStream dataOutputStream = null;
     private static Integer clientId = null;
     private static Integer port = 6969;
+    private static ServerSocket serverSocket = null;
     private static Socket socket = null;
 
     public static boolean isRunning() { return running; }
@@ -33,63 +31,18 @@ public class Client {
     public static void setPort(int port) { Client.port = port; }
 
     public static void setSocket() {
-        try { Client.socket = new Socket("localhost", port); }
+        try {
+            Client.socket = new Socket("localhost", port);
+            dataInputStream = new DataInputStream(socket.getInputStream());
+            dataOutputStream = new DataOutputStream(socket.getOutputStream());
+        }
         catch (IOException e) { throw new RuntimeException(e); }
     }
 
-    public static void callRequestFunction(ServerRequest serverRequest) {
-        System.out.println(PrintColor.GREEN + "[Success]: Called function: " + "\033[1;34m"
-                + serverRequest.getFunction() + PrintColor.RESET);
-        switch (serverRequest.getFunction()) {
-            case "@getSong" -> getSong(serverRequest);
-            case "@getSongs" -> getSongs(serverRequest);
-            default -> System.out.println(PrintColor.RED + "[Error]:   Request function invalid!"
-                    + PrintColor.RESET);
-        }
-    }
-
-    public static void getSong(ServerRequest serverRequest) {
-        System.out.println(PrintColor.YELLOW + "[Pending]: Sending song to server..." + PrintColor.RESET);
-        Song song = new SongService().getSong(serverRequest.getModelId());
-        ClientResponse clientResponse = new ClientResponse(
-                song != null,
-                SerializationUtils.serialize(song));
-        sendClientResponse(clientResponse);
-        System.out.println(PrintColor.GREEN + "[Success]: Sent song to server!" + PrintColor.RESET);
-    }
-
-    public static void getSongs(ServerRequest serverRequest) {
-        System.out.println(PrintColor.YELLOW + "[Pending]: Sending songs to server..." + PrintColor.RESET);
-        sendClientResponse(new ClientResponse(new ArrayList<>(
-                serverRequest.getModelId() == -1 ?
-                new SongService().getSongs().stream().map(song ->
-                        new Pair<>(song.getName(), song.getId())).toList() :
-                new SongService().getSongs(serverRequest.getModelId()).stream().map(song ->
-                        new Pair<>(song.getName(), song.getId())).toList())));
-        System.out.println(PrintColor.GREEN + "[Success]: Sent songs to server!" + PrintColor.RESET);
-    }
-
-    public static ServerRequest getServerRequest() {
-        try {
-            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-            byte[] requestData = new byte[dataInputStream.readInt()];
-            dataInputStream.readFully(requestData);
-            return SerializationUtils.deserialize(requestData);
-        } catch (IOException e) { throw new RuntimeException(e); }
-    }
-
-    public static void sendClientResponse(ClientResponse clientResponse) {
-        try {
-            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-            byte[] clientResponseData = SerializationUtils.serialize(clientResponse);
-            dataOutputStream.writeInt(clientResponseData.length);
-            dataOutputStream.write(clientResponseData);
-        } catch (IOException e) { throw new RuntimeException(e); }
-    }
+    public static Socket getSocket() { return socket; }
 
     public static Response getResponse() {
         try {
-            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
             byte[] responseBuffer = new byte[dataInputStream.readInt()];
             dataInputStream.readFully(responseBuffer);
             return SerializationUtils.deserialize(responseBuffer);
@@ -98,7 +51,6 @@ public class Client {
 
     public static void sendRequest(Request request) {
         try {
-            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             byte[] requestData = SerializationUtils.serialize(request);
             dataOutputStream.writeInt(requestData.length);
             dataOutputStream.write(requestData);
@@ -113,6 +65,22 @@ public class Client {
         else
             try { sendRequest(new Request(getClientId(), "@exit")); }
             catch (SQLException e) { throw new RuntimeException(e); }
+    }
+
+    public static void initializeServerHandler() {
+        try {
+            serverSocket = new ServerSocket(6969 * 2 - port);
+            try {
+                byte[] requestData = SerializationUtils.serialize(new Request(
+                        clientId,
+                        "@addServerHandler"));
+                dataOutputStream.writeInt(requestData.length);
+                dataOutputStream.write(requestData);
+            } catch (SQLException e) { throw new RuntimeException(e); }
+
+            ServerHandler serverHandler = new ServerHandler(6969 * 2 - port, serverSocket.accept());
+            new Thread(serverHandler).start();
+        } catch (IOException e) { throw new RuntimeException(e); }
     }
 
     public static void main(String[] args) {

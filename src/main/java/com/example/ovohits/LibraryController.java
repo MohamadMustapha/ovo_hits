@@ -34,7 +34,6 @@ public class LibraryController {
             Client.sendRequest(new Request(
                     Client.getClientId(),
                     "@getSongs"));
-            Client.callRequestFunction(Client.getServerRequest());
             Response songsResponse = Client.getResponse();
             ArrayList<Pair<String, Integer>> songList = songsResponse.getSongList();
             songList = new ArrayList<>(songList.stream().filter(song ->

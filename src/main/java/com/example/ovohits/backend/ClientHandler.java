@@ -57,18 +57,18 @@ public class ClientHandler implements Runnable {
 
     private ClientResponse getClientResponse() {
         try {
-            byte[] responseBuffer = new byte[dataInputStream.readInt()];
-            dataInputStream.readFully(responseBuffer);
-            return SerializationUtils.deserialize(responseBuffer);
+            byte[] clientResponseData = new byte[dataInputStream.readInt()];
+            dataInputStream.readFully(clientResponseData);
+            return SerializationUtils.deserialize(clientResponseData);
         } catch (IOException e) { throw new RuntimeException(e); }
     }
 
-    private void sendServerRequest(ServerRequest request, Socket socket) {
+    private void sendServerRequest(ServerRequest serverRequest, Socket socket) {
         try {
-            byte[] requestData = SerializationUtils.serialize(request);
             DataOutputStream clientDataOutputStream = new DataOutputStream(socket.getOutputStream());
-            clientDataOutputStream.writeInt(requestData.length);
-            clientDataOutputStream.write(requestData);
+            byte[] serverRequestData = SerializationUtils.serialize(serverRequest);
+            clientDataOutputStream.writeInt(serverRequestData.length);
+            clientDataOutputStream.write(serverRequestData);
         } catch (IOException e) { throw new RuntimeException(e); }
     }
 
@@ -76,10 +76,11 @@ public class ClientHandler implements Runnable {
         while (running) {
             System.out.println(PrintColor.YELLOW + "[Pending]: Calling function... " + PrintColor.RESET);
             Request request = getRequest();
-            System.out.println(PrintColor.GREEN + "[Success]: Called function: " + "\033[1;34m" + request.getFunction()
-                    + PrintColor.RESET);
+            System.out.println(PrintColor.GREEN + "[Success]: Called function: " + PrintColor.BLUE
+                    + request.getFunction() + PrintColor.RESET);
             switch (request.getFunction()) {
                 case "@addSavedSong" -> addSavedSong(request);
+                case "@addServerHandler" -> addServerHandler(request);
                 case "@addSong" -> addSong(request);
                 case "@addUser" -> addUser(request);
                 case "@deleteSavedSong" -> deleteSavedSong(request);
@@ -121,6 +122,14 @@ public class ClientHandler implements Runnable {
         sendResponse(new Response());
     }
 
+    public void addServerHandler(Request request) {
+        System.out.println(PrintColor.YELLOW + "[Pending]: Adding server handler to server..." + PrintColor.RESET);
+        try (Socket serverHandlerSocket = new Socket(socket.getLocalAddress(), 6969 * 2 - port)) {
+            Server.addServerHandler(request.getModelId(), serverHandlerSocket);
+        } catch (IOException e) { throw new RuntimeException(e); }
+        System.out.println(PrintColor.GREEN + "[Success]: Added server handler to server!" + PrintColor.RESET);
+    }
+
     public void addSong(Request request) {
         try {
             System.out.println(PrintColor.YELLOW + "[Pending]: Adding song to database..." + PrintColor.RESET);
@@ -153,7 +162,7 @@ public class ClientHandler implements Runnable {
         ArrayList<String> songInfo = request.getSongInfo();
         songInfo.set(1, Integer.toString(new UserService().getUser(userInfo.get(4)).getId()));
         request.setSongInfo(songInfo);
-        Server.addClient(new UserService().getUser(userInfo.get(4)).getId(), socket);
+        Server.addServerHandler(new UserService().getUser(userInfo.get(4)).getId(), socket);
         System.out.println(PrintColor.GREEN + "[Success]: Added user to database!" + PrintColor.RESET);
         sendResponse(new Response());
         addSong(request);
@@ -167,7 +176,8 @@ public class ClientHandler implements Runnable {
 
     public void exit(Request request) {
         running = false;
-        if (request.getModelId() != -1) Server.deleteClient(request.getModelId());
+        if (request.getModelId() != -1)
+            Server.deleteServerHandler(request.getModelId());
     }
 
     public void filterSongs(Request request) {
@@ -213,7 +223,7 @@ public class ClientHandler implements Runnable {
     public void getSong(Request request) {
         System.out.println(PrintColor.YELLOW + "[Pending]: Sending song to client..." + PrintColor.RESET);
         Response response = new Response(false);
-        for (Map.Entry<Integer, Socket> client : Server.getClients().entrySet()) {
+        for (Map.Entry<Integer, Socket> client : Server.getServerHandlers().entrySet()) {
             if (client.getKey() == -1) {
                 Song song = request.getUsername().isBlank() ?
                         new SongService().getSong(request.getModelId()) :
@@ -248,7 +258,7 @@ public class ClientHandler implements Runnable {
     public void getSongs(Request request) {
         System.out.println(PrintColor.YELLOW + "[Pending]: Sending songs to client..." + PrintColor.RESET);
         ArrayList<Pair<String, Integer>> songList = new ArrayList<>();
-        for (Map.Entry<Integer, Socket> client : Server.getClients().entrySet()) {
+        for (Map.Entry<Integer, Socket> client : Server.getServerHandlers().entrySet()) {
             if (client.getKey() == -1)
                 songList.addAll(request.getModelId() == -1 ?
                         new SongService().getSongs().stream().map(song ->
@@ -258,8 +268,7 @@ public class ClientHandler implements Runnable {
             else {
                 sendServerRequest(request.getModelId() == -1 ?
                         new ServerRequest("@getSongs") :
-                        new ServerRequest(request.getModelId(), "@getSongs"),
-                        client.getValue());
+                        new ServerRequest(request.getModelId(), "@getSongs"), client.getValue());
                 ClientResponse clientResponse = getClientResponse();
                 songList.addAll(clientResponse.getSongList());
             }
@@ -282,14 +291,17 @@ public class ClientHandler implements Runnable {
         System.out.println(PrintColor.YELLOW + "[Pending]: Sending login verification..." + PrintColor.RESET);
         ArrayList<String> loginInfo = request.getLoginInfo();
         User user = new UserService().getUser(loginInfo.get(0));
-        Response response = new Response(user != null && user.getPassword().equals(loginInfo.get(1)));
+        Response response = new Response(
+                user != null && user.getPassword().equals(loginInfo.get(1)) &&
+                        !Server.getOnlineUsers().contains(user.getId()));
         response.setUserId(user != null ? user.getId() : -1);
         sendResponse(response);
-        if (response.isExists()) {
-            Server.addClient(response.getUserId(), socket);
+        if (response.isExists())
             System.out.println(PrintColor.GREEN + "[Success]: Login verification successful!" + PrintColor.RESET);
+        else {
+            if (user == null) System.out.println(PrintColor.RED + "[Error]:   User doesn't exist!" + PrintColor.RESET);
+            else System.out.println(PrintColor.RED + "[Error]:   User already logged in!" + PrintColor.RESET);
         }
-        else System.out.println(PrintColor.RED + "[Error]:   User doesn't exist!" + PrintColor.RESET);
     }
 
     public void playSong() {
